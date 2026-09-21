@@ -75,7 +75,7 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
 
 #leafletMap{
   width:100%;
-  height:620px;
+  height:440px;
   background:#d9edf5;
 }
 .leaflet-container{
@@ -123,7 +123,7 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
   line-height:1.4;
 }
 @media(max-width:700px){
-  #leafletMap{height:520px}
+  #leafletMap{height:390px}
 }
 
 </style>
@@ -156,7 +156,7 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
   <div id="leafletMap" aria-label="Interactive Michigan road map with lighthouse locations"></div>
   <div class="mapnote">
     <strong>Small red dots are lighthouse locations.</strong>
-    Roads, towns, shorelines, and place names come from the live OpenStreetMap road map.
+    This view is locked closely around Michigan and is intentionally shorter so the whole state is easier to see at once.
     Zoom in for crowded areas, then tap any dot for lighthouse details.
   </div>
 </div>
@@ -270,10 +270,18 @@ function initRoadMap(){
     return;
   }
 
+  const michiganBounds=L.latLngBounds(
+    [41.65,-90.55],   // southwest edge of Michigan viewing area
+    [48.32,-82.10]    // northeast edge of Michigan viewing area
+  );
+
   roadMap=L.map("leafletMap",{
     zoomControl:true,
     scrollWheelZoom:true,
-    preferCanvas:true
+    preferCanvas:true,
+    maxBounds:michiganBounds,
+    maxBoundsViscosity:1.0,
+    minZoom:6
   });
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
@@ -282,15 +290,26 @@ function initRoadMap(){
   }).addTo(roadMap);
 
   markerLayer=L.layerGroup().addTo(roadMap);
+  roadMap.fitBounds([[41.70,-90.45],[48.25,-82.15]],{padding:[4,4],maxZoom:7});
   render();
 }
 
 function fitMapToList(list){
   if(!roadMap || !list.length) return;
+
+  if(activeRegion==="All" && !visitedOnly && !document.getElementById("search").value.trim()){
+    // Michigan-wide view, cropped much tighter than the previous version.
+    roadMap.fitBounds([[41.70,-90.45],[48.25,-82.15]],{
+      padding:[4,4],
+      maxZoom:7
+    });
+    return;
+  }
+
   const bounds=L.latLngBounds(list.map(l=>[l.lat,l.lon]));
   roadMap.fitBounds(bounds,{
-    padding:[32,32],
-    maxZoom: activeRegion==="All" ? 7 : 8
+    padding:[22,22],
+    maxZoom: activeRegion==="All" ? 8 : 9
   });
 }
 
