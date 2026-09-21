@@ -18,6 +18,16 @@ header p{margin:7px 0 0;opacity:.92}
 .wrap{max-width:1050px;margin:auto;padding:16px}
 .controls{background:white;border:1px solid var(--border);border-radius:16px;padding:12px;margin-bottom:14px;box-shadow:0 3px 12px rgba(0,0,0,.05)}
 .row{display:flex;gap:8px;flex-wrap:wrap}
+.zonebar{display:none;gap:8px;flex-wrap:wrap;margin-top:9px;padding-top:9px;border-top:1px solid #e2ebef}
+.zonebar.show{display:flex}
+.zone{background:#f5eee0;color:#5b513d;border:1px solid #ded0b6}
+.zone.active{background:#8a5c24;color:#fff;border-color:#8a5c24}
+.cluster{cursor:pointer;outline:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,.18))}
+.cluster circle{fill:#fff;stroke:#b53a30;stroke-width:3;vector-effect:non-scaling-stroke}
+.cluster .clusterCount{font-size:15px;font-weight:900;fill:#b53a30;text-anchor:middle;dominant-baseline:middle}
+.cluster .clusterLabel{font-size:10px;font-weight:850;fill:#274c5e;text-anchor:middle;paint-order:stroke;stroke:#eef8fc;stroke-width:3px;stroke-linejoin:round}
+.cluster:hover circle,.cluster:focus circle{fill:#fff3f1;stroke:#84241d;stroke-width:4}
+.mapHint{font-size:12px;color:var(--muted);font-weight:650}
 button,.btn{border:0;border-radius:10px;padding:10px 13px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block}
 .filter{background:#eaf2f6;color:#244b61}
 .filter.active{background:var(--navy);color:white}
@@ -90,13 +100,14 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
     <button class="filter" data-region="Lower Peninsula">Lower Peninsula</button>
     <button class="filter" id="visitedOnly">✓ Visited Only</button>
   </div>
+  <div id="zonebar" class="zonebar"></div>
   <input id="search" type="search" placeholder="Search lighthouse, county, or lake…">
 </section>
 
 <div class="mapwrap">
   <div class="maphead">
     <strong>Michigan Lighthouse Map</strong>
-    <span>Tap a red numbered marker</span>
+    <span id="mapHint" class="mapHint">Choose an area to zoom in</span>
   </div>
   <svg id="michiganMap" viewBox="0 0 700 620" aria-label="Geographic outline map of Michigan with lighthouse locations" role="img">
     <rect x="0" y="0" width="700" height="620" fill="#bfe7f5"/>
@@ -195,7 +206,7 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
 <section id="cards" class="cards"></section>
 
 <div class="note">
-<strong>Upper Peninsula expansion:</strong> This working version now includes 44 Upper Peninsula lighthouse sites plus the six Lower Peninsula starters. Tap any marker for quick details, directions, and the full card below.
+<strong>Cleaner map navigation:</strong> The statewide map now opens with regional groups instead of dozens of overlapping pins. Choose a region, then a subregion, to see individual lighthouse markers and detail cards.
 </div>
 </main>
 
@@ -256,7 +267,7 @@ const lights=[
 {name:"Fort Gratiot Lighthouse",region:"Lower Peninsula",lake:"Lake Huron",county:"St. Clair County",lat:43.0063,lon:-82.4224,built:"1829",operation:"1829–present",active:true,access:"Historic light station; seasonal tours",address:"2802 Omar St, Port Huron, MI 48060",history:"Fort Gratiot is Michigan's oldest surviving lighthouse."}
 ];
 
-let activeRegion="All", visitedOnly=false;
+let activeRegion="All", activeZone="Overview", visitedOnly=false;
 let visited=new Set();
 try { visited=new Set(JSON.parse(localStorage.getItem("miLighthouseVisited")||"[]")); } catch(e) { visited=new Set(); }
 
@@ -266,153 +277,44 @@ function project(lat,lon){
   const y=MAP.padY+(MAP.maxLat-lat)*(MAP.h-2*MAP.padY)/(MAP.maxLat-MAP.minLat);
   return {x,y};
 }
-function zoomMap(region){
+function zoneFor(l){
+  if(l.region==="Upper Peninsula"){
+    if(l.lon < -88.0) return "UP West";
+    if(l.lon < -86.5) return "UP Central";
+    return "UP East";
+  }
+  return l.lon < -84.8 ? "LP West" : "LP East";
+}
+const ZONE_LABELS={
+  "UP West":"Western UP",
+  "UP Central":"Central UP",
+  "UP East":"Eastern UP",
+  "LP West":"Lake Michigan / West LP",
+  "LP East":"Lake Huron / East LP"
+};
+function zoomMap(region,zone="Overview"){
   const map=document.getElementById("michiganMap");
-  if(region==="Upper Peninsula") map.setAttribute("viewBox","20 5 565 345");
+  if(zone==="UP West") map.setAttribute("viewBox","95 15 180 190");
+  else if(zone==="UP Central") map.setAttribute("viewBox","195 70 190 255");
+  else if(zone==="UP East") map.setAttribute("viewBox","330 125 245 165");
+  else if(zone==="LP West") map.setAttribute("viewBox","300 285 125 165");
+  else if(zone==="LP East") map.setAttribute("viewBox","430 215 255 285");
+  else if(region==="Upper Peninsula") map.setAttribute("viewBox","65 20 520 285");
   else if(region==="Lower Peninsula") map.setAttribute("viewBox","290 210 395 385");
   else map.setAttribute("viewBox","0 0 700 620");
 }
-
-
-function directionsURL(l){
-  return "https://www.google.com/maps/dir/?api=1&destination="+encodeURIComponent(l.address);
-}
-function clearSelectedPins(){
-  document.querySelectorAll('.pin.selected').forEach(p=>p.classList.remove('selected'));
-}
-function closeMapPopup(){
-  document.getElementById('mapPopup').classList.remove('show');
-  clearSelectedPins();
-}
-function showMapPopup(l,pinEl){
-  clearSelectedPins();
-  if(pinEl) pinEl.classList.add('selected');
-  const popup=document.getElementById('mapPopup');
-  popup.innerHTML=`
-    <div class="popupTop">
-      <div class="popupIcon">🗼</div>
-      <div class="popupText">
-        <div class="popupName">${l.name}</div>
-        <div class="popupMeta">${l.county} • ${l.lake}</div>
-        <div class="popupAccess"><strong>Access:</strong> ${l.access}</div>
-      </div>
-    </div>
-    <div class="popupActions">
-      <button class="popupView" onclick='scrollCard(${JSON.stringify(l.name)}); closeMapPopup();'>View Full Details</button>
-      <a class="btn popupDirections" href="${directionsURL(l)}" target="_blank">🧭 Directions</a>
-      <button class="popupClose" onclick="closeMapPopup()">Close</button>
-    </div>`;
-  popup.classList.add('show');
-}
-window.closeMapPopup=closeMapPopup;
-
-function filtered(){
-  const q=document.getElementById("search").value.toLowerCase().trim();
-  return lights.filter(l=>{
-    const regionOK=activeRegion==="All"||l.region===activeRegion;
-    const visitOK=!visitedOnly||visited.has(l.name);
-    const hay=(l.name+" "+l.county+" "+l.lake).toLowerCase();
-    return regionOK&&visitOK&&(!q||hay.includes(q));
-  });
-}
-function save(){try{localStorage.setItem("miLighthouseVisited",JSON.stringify([...visited]));}catch(e){}}
-function scrollCard(name){
-  const id="card-"+lights.findIndex(l=>l.name===name);
-  const el=document.getElementById(id);
-  if(el) el.scrollIntoView({behavior:"smooth",block:"start"});
-}
-function render(){
-  const list=filtered();
-  const pinGroup=document.getElementById("pins");
-  pinGroup.innerHTML="";
-  const placed=[];
-  list.forEach((l,shownIndex)=>{
-    const exact=project(l.lat,l.lon);
-    let p={...exact};
-    const minDist=21;
-    for(let attempt=0;attempt<18;attempt++){
-      const crowd=placed.find(q=>Math.hypot(q.x-p.x,q.y-p.y)<minDist);
-      if(!crowd) break;
-      const angle=(attempt*137.5)*Math.PI/180;
-      const radius=8+attempt*2.2;
-      p={x:exact.x+Math.cos(angle)*radius,y:exact.y+Math.sin(angle)*radius};
-    }
-    placed.push(p);
-    const originalIndex=lights.findIndex(x=>x.name===l.name);
-    if(Math.hypot(p.x-exact.x,p.y-exact.y)>4){
-      const leader=document.createElementNS("http://www.w3.org/2000/svg","line");
-      leader.setAttribute("x1",exact.x.toFixed(1)); leader.setAttribute("y1",exact.y.toFixed(1));
-      leader.setAttribute("x2",p.x.toFixed(1)); leader.setAttribute("y2",p.y.toFixed(1));
-      leader.setAttribute("stroke","#7a6f58"); leader.setAttribute("stroke-width","1.2");
-      leader.setAttribute("stroke-dasharray","2 2"); leader.setAttribute("opacity",".75");
-      pinGroup.appendChild(leader);
-    }
-    const g=document.createElementNS("http://www.w3.org/2000/svg","g");
-    g.setAttribute("class","pin");
-    g.setAttribute("transform",`translate(${p.x.toFixed(1)},${p.y.toFixed(1)})`);
-    g.setAttribute("tabindex","0");
-    g.setAttribute("role","button");
-    g.setAttribute("aria-label",l.name);
-    const markerNumber=originalIndex+1;
-    g.innerHTML=`<title>${l.name}</title><path class="drop" d="M0,-12 C-7,-12 -11,-7 -11,-1 C-11,7 0,17 0,17 C0,17 11,7 11,-1 C11,-7 7,-12 0,-12 Z"></path><circle cx="0" cy="-1" r="6" fill="#d9362b"></circle><text class="num" x="0" y="-1" style="font-size:8px">${markerNumber}</text>`;
-    g.addEventListener("click",()=>showMapPopup(l,g));
-    g.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();showMapPopup(l,g);}});
-    pinGroup.appendChild(g);
-  });
-
-  const cards=document.getElementById("cards");
-  cards.innerHTML="";
-  list.forEach(l=>{
-    const index=lights.findIndex(x=>x.name===l.name);
-    const done=visited.has(l.name);
-    const card=document.createElement("article");
-    card.className="card"; card.id="card-"+index;
-    card.innerHTML=`
-      <div class="hero">🌊 🗼</div>
-      <div class="cardbody">
-      <h2><span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:#d9362b;color:white;font-size:13px;margin-right:7px;vertical-align:2px">${index+1}</span>${l.name}</h2>
-      <div class="place">${l.county} • ${l.lake}</div>
-      <div class="badges">
-        <span class="badge">${l.region}</span>
-        <span class="badge ${l.active?'activeLight':'inactive'}">${l.active?'● Active light':'○ Inactive light'}</span>
-        ${done?'<span class="badge activeLight">✓ Visited</span>':''}
-      </div>
-      <dl>
-        <dt>Built</dt><dd>${l.built}</dd>
-        <dt>Operation</dt><dd>${l.operation}</dd>
-        <dt>Access</dt><dd>${l.access}</dd>
-      </dl>
-      <div class="history">${l.history}</div>
-      <div class="actions">
-        <a class="btn directions" href="${directionsURL(l)}" target="_blank">🧭 Get Directions</a>
-        <button class="visit ${done?'done':''}" onclick="toggleVisited(${JSON.stringify(l.name)})">${done?'✓ Visited':'Mark as Visited'}</button>
-      </div>
-      </div>`;
-    cards.appendChild(card);
-  });
-  document.getElementById("count").textContent=`Showing ${list.length} lighthouse${list.length===1?"":"s"}`;
-  document.getElementById("visitedCount").textContent=`Visited: ${visited.size}`;
-}
-window.toggleVisited=function(name){
-  if(visited.has(name)) visited.delete(name); else visited.add(name);
-  save(); render();
-}
-window.scrollCard=scrollCard;
-document.querySelectorAll("[data-region]").forEach(btn=>{
+function setActiveRegionButton(region){
+  document.querySelectorAll("[data-region]").forEach(btn=>{
   btn.addEventListener("click",()=>{
-    document.querySelectorAll("[data-region]").forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active");
     activeRegion=btn.dataset.region;
-    zoomMap(activeRegion);
+    activeZone="Overview";
+    setActiveRegionButton(activeRegion);
+    renderZoneButtons();
+    zoomMap(activeRegion,activeZone);
     closeMapPopup();
     render();
   });
 });
-document.getElementById("visitedOnly").addEventListener("click",e=>{
-  visitedOnly=!visitedOnly; e.currentTarget.classList.toggle("active",visitedOnly); closeMapPopup(); render();
-});
-document.getElementById("search").addEventListener("input",()=>{closeMapPopup();render();});
-render();
 </script>
 </body>
 </html>
