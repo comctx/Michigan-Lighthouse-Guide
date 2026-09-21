@@ -18,16 +18,6 @@ header p{margin:7px 0 0;opacity:.92}
 .wrap{max-width:1050px;margin:auto;padding:16px}
 .controls{background:white;border:1px solid var(--border);border-radius:16px;padding:12px;margin-bottom:14px;box-shadow:0 3px 12px rgba(0,0,0,.05)}
 .row{display:flex;gap:8px;flex-wrap:wrap}
-.zonebar{display:none;gap:8px;flex-wrap:wrap;margin-top:9px;padding-top:9px;border-top:1px solid #e2ebef}
-.zonebar.show{display:flex}
-.zone{background:#f5eee0;color:#5b513d;border:1px solid #ded0b6}
-.zone.active{background:#8a5c24;color:#fff;border-color:#8a5c24}
-.cluster{cursor:pointer;outline:none;filter:drop-shadow(0 2px 4px rgba(0,0,0,.18))}
-.cluster circle{fill:#fff;stroke:#b53a30;stroke-width:3;vector-effect:non-scaling-stroke}
-.cluster .clusterCount{font-size:15px;font-weight:900;fill:#b53a30;text-anchor:middle;dominant-baseline:middle}
-.cluster .clusterLabel{font-size:10px;font-weight:850;fill:#274c5e;text-anchor:middle;paint-order:stroke;stroke:#eef8fc;stroke-width:3px;stroke-linejoin:round}
-.cluster:hover circle,.cluster:focus circle{fill:#fff3f1;stroke:#84241d;stroke-width:4}
-.mapHint{font-size:12px;color:var(--muted);font-weight:650}
 button,.btn{border:0;border-radius:10px;padding:10px 13px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block}
 .filter{background:#eaf2f6;color:#244b61}
 .filter.active{background:var(--navy);color:white}
@@ -82,7 +72,62 @@ dt{font-weight:750;color:#425d6b} dd{margin:0}
 .note{margin-top:16px;background:var(--cream);border:1px solid #eadcae;border-radius:14px;padding:12px 14px;font-size:13px;line-height:1.45}
 footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13px}
 @media(max-width:600px){header h1{font-size:24px}.wrap{padding:10px}.controls{position:sticky;top:0;z-index:5}}
+
+#leafletMap{
+  width:100%;
+  height:620px;
+  background:#d9edf5;
+}
+.leaflet-container{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+}
+.lighthouse-dot{
+  cursor:pointer;
+}
+.mapcount{
+  font-size:12px;
+  color:var(--muted);
+  background:white;
+  border:1px solid #d7e2e8;
+  border-radius:999px;
+  padding:5px 9px;
+  white-space:nowrap;
+}
+.leaflet-popup-content{
+  margin:12px 14px;
+  min-width:210px;
+}
+.leaflet-popup-content h3{
+  margin:0 0 5px;
+  color:#143f57;
+  font-size:16px;
+}
+.leaflet-popup-content p{
+  margin:4px 0;
+  font-size:12px;
+  line-height:1.35;
+}
+.leaflet-popup-content a{
+  display:inline-block;
+  margin-top:7px;
+  text-decoration:none;
+  font-weight:700;
+  color:#1d6d92;
+}
+.mapnote{
+  font-size:13px;
+  color:#496876;
+  background:#eef8fc;
+  border-top:1px solid #b8d7e4;
+  padding:10px 14px;
+  line-height:1.4;
+}
+@media(max-width:700px){
+  #leafletMap{height:520px}
+}
+
 </style>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 </head>
 <body>
 <header>
@@ -100,103 +145,20 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
     <button class="filter" data-region="Lower Peninsula">Lower Peninsula</button>
     <button class="filter" id="visitedOnly">✓ Visited Only</button>
   </div>
-  <div id="zonebar" class="zonebar"></div>
   <input id="search" type="search" placeholder="Search lighthouse, county, or lake…">
 </section>
 
 <div class="mapwrap">
   <div class="maphead">
-    <strong>Michigan Lighthouse Map</strong>
-    <span id="mapHint" class="mapHint">Choose an area to zoom in</span>
+    <strong>Michigan Lighthouse Road Map</strong>
+    <span id="mapCount" class="mapcount">Loading lighthouse locations…</span>
   </div>
-  <svg id="michiganMap" viewBox="0 0 700 620" aria-label="Geographic outline map of Michigan with lighthouse locations" role="img">
-    <rect x="0" y="0" width="700" height="620" fill="#bfe7f5"/>
-    <text class="lakelabel" x="145" y="30">Lake Superior</text>
-    <text class="lakelabel" x="250" y="470" transform="rotate(-67 250 470)">Lake Michigan</text>
-    <text class="lakelabel" x="578" y="295" transform="rotate(67 578 295)">Lake Huron</text>
-    <path class="land" d="M263.7,294.4 L252.6,286.1 L259.3,274.7 L242.2,272.9 L249.0,262.0 L249.8,247.9 L234.7,238.3 L226.3,228.2 L195.4,220.3 L185.8,223.0 L154.8,211.1 L80.1,194.9 L72.2,181.3 L58.6,176.5 L86.9,168.2 L99.6,158.6 L131.4,154.6 L152.0,142.8 L161.6,142.3 L169.5,134.0 L192.2,122.2 L203.7,112.1 L220.8,105.5 L237.1,111.2 L208.5,135.8 L201.7,144.1 L202.1,159.0 L216.0,147.6 L241.1,149.4 L260.5,157.2 L278.0,179.2 L287.5,183.1 L305.8,179.6 L310.2,184.4 L328.5,187.0 L367.4,168.6 L387.7,166.9 L414.7,167.8 L433.0,161.6 L446.9,161.2 L449.7,183.5 L464.0,186.6 L478.3,183.1 L484.3,188.4 L493.8,181.8 L514.9,179.6 L515.3,207.6 L524.8,219.5 L539.1,222.5 L540.7,214.6 L554.6,214.6 L562.1,223.0 L555.8,229.1 L516.1,223.8 L497.0,227.3 L476.3,217.7 L470.4,226.5 L473.1,233.9 L464.0,232.2 L450.5,221.2 L427.0,214.6 L415.1,214.2 L403.6,224.7 L384.5,227.3 L363.8,225.2 L355.5,229.5 L353.5,238.3 L330.9,245.8 L332.1,235.2 L322.1,233.0 L318.1,244.0 L301.5,244.4 L293.9,249.3 L282.8,268.1 L262.1,292.2 L263.7,294.4 Z"/>
-    <path class="land" d="M563.7,563.4 L465.6,566.5 L465.6,561.2 L379.7,561.2 L319.3,561.2 L334.0,550.7 L344.0,532.7 L353.1,521.8 L359.9,506.5 L363.8,484.5 L362.3,460.9 L340.8,414.4 L347.6,396.9 L342.8,375.9 L359.5,354.4 L363.1,336.4 L360.7,326.8 L372.6,322.9 L374.2,309.7 L392.9,306.2 L407.2,291.8 L406.0,320.7 L413.5,322.0 L423.1,307.5 L423.5,283.0 L429.4,276.9 L449.3,272.9 L442.9,255.8 L456.0,241.4 L472.3,240.5 L490.6,249.7 L508.5,251.0 L517.2,262.4 L530.8,263.3 L553.4,273.8 L561.4,273.4 L573.7,290.4 L563.7,299.6 L573.3,311.5 L576.9,325.1 L572.5,354.9 L557.8,362.3 L554.2,377.6 L536.7,382.9 L527.2,401.3 L530.8,408.3 L548.2,414.9 L561.8,404.8 L577.6,384.2 L602.7,376.3 L615.0,382.5 L622.6,393.8 L630.1,427.1 L631.3,443.8 L639.2,464.0 L631.7,492.9 L619.8,497.3 L619.4,486.7 L611.4,489.8 L602.3,513.9 L587.6,523.1 L583.2,541.5 L564.9,556.8 L563.7,563.4 Z"/>
-    <path class="island" d="M414.7,243.6 L415.9,253.2 L406.4,255.0 L410.3,241.4 L414.7,243.6 Z"/>
-    <path class="island" d="M175.5,63.9 L157.2,74.0 L147.7,75.3 L148.5,67.0 L194.2,48.1 L185.4,61.3 L175.5,63.9 Z"/>
-    <text class="regionlabel" x="250" y="214">UPPER PENINSULA</text>
-    <text class="regionlabel" x="430" y="390" transform="rotate(71 430 390)">LOWER PENINSULA</text>
-    <g id="pins">
-      <g class="pin static-pin" transform="translate(454.7,160.3)" aria-label="Whitefish Point Light Station">
-        <title>Whitefish Point Light Station</title>
-        <path class="drop" d="M0,-16 C-9,-16 -15,-9 -15,-1 C-15,9 0,23 0,23 C0,23 15,9 15,-1 C15,-9 9,-16 0,-16 Z"></path>
-        <circle cx="0" cy="-1" r="8" fill="#d9362b"></circle>
-        <text class="num" x="0" y="-1">1</text>
-      </g>
-      <g class="pin static-pin" transform="translate(478.3,183.2)" aria-label="Point Iroquois Lighthouse">
-        <title>Point Iroquois Lighthouse</title>
-        <path class="drop" d="M0,-16 C-9,-16 -15,-9 -15,-1 C-15,9 0,23 0,23 C0,23 15,9 15,-1 C15,-9 9,-16 0,-16 Z"></path>
-        <circle cx="0" cy="-1" r="8" fill="#d9362b"></circle>
-        <text class="num" x="0" y="-1">2</text>
-      </g>
-      <g class="pin static-pin" transform="translate(432.9,161.7)" aria-label="Crisp Point Lighthouse">
-        <title>Crisp Point Lighthouse</title>
-        <path class="drop" d="M0,-16 C-9,-16 -15,-9 -15,-1 C-15,9 0,23 0,23 C0,23 15,9 15,-1 C15,-9 9,-16 0,-16 Z"></path>
-        <circle cx="0" cy="-1" r="8" fill="#d9362b"></circle>
-        <text class="num" x="0" y="-1">3</text>
-      </g>
-      <g class="pin static-pin" transform="translate(368.9,168.2)" aria-label="Au Sable Light Station">
-        <title>Au Sable Light Station</title>
-        <path class="drop" d="M0,-16 C-9,-16 -15,-9 -15,-1 C-15,9 0,23 0,23 C0,23 15,9 15,-1 C15,-9 9,-16 0,-16 Z"></path>
-        <circle cx="0" cy="-1" r="8" fill="#d9362b"></circle>
-        <text class="num" x="0" y="-1">4</text>
-      </g>
-      <g class="pin static-pin" transform="translate(279.1,178.3)" aria-label="Marquette Harbor Lighthouse">
-        <title>Marquette Harbor Lighthouse</title>
-        <path class="drop" d="M0,-16 C-9,-16 -15,-9 -15,-1 C-15,9 0,23 0,23 C0,23 15,9 15,-1 C15,-9 9,-16 0,-16 Z"></path>
-        <circle cx="0" cy="-1" r="8" fill="#d9362b"></circle>
-        <text class="num" x="0" y="-1">5</text>
-      </g>
-      <g class="pin static-pin" transform="translate(222.3,105.2)" aria-label="Eagle Harbor Lighthouse">
-        <title>Eagle Harbor Lighthouse</title>
-        <path class="drop" d="M0,-16 C-9,-16 -15,-9 -15,-1 C-15,9 0,23 0,23 C0,23 15,9 15,-1 C15,-9 9,-16 0,-16 Z"></path>
-        <circle cx="0" cy="-1" r="8" fill="#d9362b"></circle>
-        <text class="num" x="0" y="-1">6</text>
-      </g>
-      <g class="pin static-pin" transform="translate(471.4,239.0)" aria-label="Old Mackinac Point Lighthouse">
-        <title>Old Mackinac Point Lighthouse</title>
-        <path class="drop" d="M0,-16 C-9,-16 -15,-9 -15,-1 C-15,9 0,23 0,23 C0,23 15,9 15,-1 C15,-9 9,-16 0,-16 Z"></path>
-        <circle cx="0" cy="-1" r="8" fill="#d9362b"></circle>
-        <text class="num" x="0" y="-1">7</text>
-      </g>
-      <g class="pin static-pin" transform="translate(360.5,326.7)" aria-label="Point Betsie Lighthouse">
-        <title>Point Betsie Lighthouse</title>
-        <path class="drop" d="M0,-16 C-9,-16 -15,-9 -15,-1 C-15,9 0,23 0,23 C0,23 15,9 15,-1 C15,-9 9,-16 0,-16 Z"></path>
-        <circle cx="0" cy="-1" r="8" fill="#d9362b"></circle>
-        <text class="num" x="0" y="-1">8</text>
-      </g>
-      <g class="pin static-pin" transform="translate(341.7,377.4)" aria-label="Big Sable Point Lighthouse">
-        <title>Big Sable Point Lighthouse</title>
-        <path class="drop" d="M0,-16 C-9,-16 -15,-9 -15,-1 C-15,9 0,23 0,23 C0,23 15,9 15,-1 C15,-9 9,-16 0,-16 Z"></path>
-        <circle cx="0" cy="-1" r="8" fill="#d9362b"></circle>
-        <text class="num" x="0" y="-1">9</text>
-      </g>
-      <g class="pin static-pin" transform="translate(339.9,409.9)" aria-label="Little Sable Point Lighthouse">
-        <title>Little Sable Point Lighthouse</title>
-        <path class="drop" d="M0,-16 C-9,-16 -15,-9 -15,-1 C-15,9 0,23 0,23 C0,23 15,9 15,-1 C15,-9 9,-16 0,-16 Z"></path>
-        <circle cx="0" cy="-1" r="8" fill="#d9362b"></circle>
-        <text class="num" x="0" y="-1">10</text>
-      </g>
-      <g class="pin static-pin" transform="translate(564.1,361.7)" aria-label="Tawas Point Lighthouse">
-        <title>Tawas Point Lighthouse</title>
-        <path class="drop" d="M0,-16 C-9,-16 -15,-9 -15,-1 C-15,9 0,23 0,23 C0,23 15,9 15,-1 C15,-9 9,-16 0,-16 Z"></path>
-        <circle cx="0" cy="-1" r="8" fill="#d9362b"></circle>
-        <text class="num" x="0" y="-1">11</text>
-      </g>
-      <g class="pin static-pin" transform="translate(638.6,461.5)" aria-label="Fort Gratiot Lighthouse">
-        <title>Fort Gratiot Lighthouse</title>
-        <path class="drop" d="M0,-16 C-9,-16 -15,-9 -15,-1 C-15,9 0,23 0,23 C0,23 15,9 15,-1 C15,-9 9,-16 0,-16 Z"></path>
-        <circle cx="0" cy="-1" r="8" fill="#d9362b"></circle>
-        <text class="num" x="0" y="-1">12</text>
-      </g>
-    </g>
-  </svg>
-  <div id="mapPopup" class="mapPopup" aria-live="polite"></div>
-  <div class="legend"><strong>Red markers are lighthouse locations.</strong> Tap a marker to see the lighthouse name, lake, access information, directions, and a link to the full card.</div>
+  <div id="leafletMap" aria-label="Interactive Michigan road map with lighthouse locations"></div>
+  <div class="mapnote">
+    <strong>Small red dots are lighthouse locations.</strong>
+    Roads, towns, shorelines, and place names come from the live OpenStreetMap road map.
+    Zoom in for crowded areas, then tap any dot for lighthouse details.
+  </div>
 </div>
 
 <div class="statusbar">
@@ -206,7 +168,7 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
 <section id="cards" class="cards"></section>
 
 <div class="note">
-<strong>Cleaner map navigation:</strong> The statewide map now opens with regional groups instead of dozens of overlapping pins. Choose a region, then a subregion, to see individual lighthouse markers and detail cards.
+<strong>Road-map version:</strong> This version displays all 51 lighthouse records currently loaded in the app as small red dots on an interactive road map. The next data expansion can add the remaining Michigan lighthouse sites without changing the map design.
 </div>
 </main>
 
@@ -266,55 +228,199 @@ const lights=[
 {name:"Tawas Point Lighthouse",region:"Lower Peninsula",lake:"Lake Huron",county:"Iosco County",lat:44.2538,lon:-83.4496,built:"1876",operation:"1876–2016 in the historic tower",active:false,access:"Public museum in Tawas Point State Park",address:"686 Tawas Beach Rd, East Tawas, MI 48730",history:"The present Tawas Point lighthouse replaced an earlier station after the shoreline changed."},
 {name:"Fort Gratiot Lighthouse",region:"Lower Peninsula",lake:"Lake Huron",county:"St. Clair County",lat:43.0063,lon:-82.4224,built:"1829",operation:"1829–present",active:true,access:"Historic light station; seasonal tours",address:"2802 Omar St, Port Huron, MI 48060",history:"Fort Gratiot is Michigan's oldest surviving lighthouse."}
 ];
+</script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
 
-let activeRegion="All", activeZone="Overview", visitedOnly=false;
+let activeRegion="All", visitedOnly=false;
 let visited=new Set();
 try { visited=new Set(JSON.parse(localStorage.getItem("miLighthouseVisited")||"[]")); } catch(e) { visited=new Set(); }
 
-const MAP={minLon:-90.7,maxLon:-82.1,minLat:41.4,maxLat:48.4,w:700,h:620,padX:38,padY:30};
-function project(lat,lon){
-  const x=MAP.padX+(lon-MAP.minLon)*(MAP.w-2*MAP.padX)/(MAP.maxLon-MAP.minLon);
-  const y=MAP.padY+(MAP.maxLat-lat)*(MAP.h-2*MAP.padY)/(MAP.maxLat-MAP.minLat);
-  return {x,y};
+let roadMap=null;
+let markerLayer=null;
+
+function directionsURL(l){
+  return "https://www.google.com/maps/dir/?api=1&destination="+encodeURIComponent(l.lat+","+l.lon);
 }
-function zoneFor(l){
-  if(l.region==="Upper Peninsula"){
-    if(l.lon < -88.0) return "UP West";
-    if(l.lon < -86.5) return "UP Central";
-    return "UP East";
+
+function filtered(){
+  const q=document.getElementById("search").value.toLowerCase().trim();
+  return lights.filter(l=>{
+    const regionOK=activeRegion==="All"||l.region===activeRegion;
+    const visitOK=!visitedOnly||visited.has(l.name);
+    const hay=(l.name+" "+l.county+" "+l.lake+" "+l.address).toLowerCase();
+    return regionOK&&visitOK&&(!q||hay.includes(q));
+  });
+}
+
+function save(){
+  try{localStorage.setItem("miLighthouseVisited",JSON.stringify([...visited]));}catch(e){}
+}
+
+function scrollCard(name){
+  const id="card-"+lights.findIndex(l=>l.name===name);
+  const el=document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function initRoadMap(){
+  if(typeof L==="undefined"){
+    document.getElementById("leafletMap").innerHTML=
+      '<div style="padding:30px;text-align:center;color:#496876">The road map could not load. Check your internet connection and reload the page.</div>';
+    return;
   }
-  return l.lon < -84.8 ? "LP West" : "LP East";
+
+  roadMap=L.map("leafletMap",{
+    zoomControl:true,
+    scrollWheelZoom:true,
+    preferCanvas:true
+  });
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+    maxZoom:18,
+    attribution:'&copy; OpenStreetMap contributors'
+  }).addTo(roadMap);
+
+  markerLayer=L.layerGroup().addTo(roadMap);
+  render();
 }
-const ZONE_LABELS={
-  "UP West":"Western UP",
-  "UP Central":"Central UP",
-  "UP East":"Eastern UP",
-  "LP West":"Lake Michigan / West LP",
-  "LP East":"Lake Huron / East LP"
+
+function fitMapToList(list){
+  if(!roadMap || !list.length) return;
+  const bounds=L.latLngBounds(list.map(l=>[l.lat,l.lon]));
+  roadMap.fitBounds(bounds,{
+    padding:[32,32],
+    maxZoom: activeRegion==="All" ? 7 : 8
+  });
+}
+
+function updateMapMarkers(list){
+  if(!roadMap || !markerLayer) return;
+  markerLayer.clearLayers();
+
+  list.forEach((l)=>{
+    const index=lights.findIndex(x=>x.name===l.name)+1;
+    const dot=L.circleMarker([l.lat,l.lon],{
+      radius:5,
+      color:"#ffffff",
+      weight:1.5,
+      fillColor:"#d9362b",
+      fillOpacity:0.98,
+      className:"lighthouse-dot"
+    });
+
+    const visitedText=visited.has(l.name) ? " • ✓ Visited" : "";
+    dot.bindTooltip(`${index}. ${l.name}`,{
+      direction:"top",
+      offset:[0,-4],
+      opacity:.95
+    });
+
+    dot.bindPopup(`
+      <h3>${index}. ${l.name}</h3>
+      <p><strong>${l.county}</strong><br>${l.lake}${visitedText}</p>
+      <p><strong>Access:</strong> ${l.access}</p>
+      <a href="${directionsURL(l)}" target="_blank">🧭 Get Directions</a>
+      &nbsp;•&nbsp;
+      <a href="#" onclick='scrollCard(${JSON.stringify(l.name)});return false;'>View Details</a>
+    `);
+
+    dot.addTo(markerLayer);
+  });
+
+  document.getElementById("mapCount").textContent=`${list.length} lighthouse${list.length===1?"":"s"} on map`;
+}
+
+function renderCards(list){
+  const cards=document.getElementById("cards");
+  cards.innerHTML="";
+
+  list.forEach(l=>{
+    const index=lights.findIndex(x=>x.name===l.name);
+    const done=visited.has(l.name);
+    const card=document.createElement("article");
+    card.className="card";
+    card.id="card-"+index;
+    card.innerHTML=`
+      <div class="hero">🌊 🗼</div>
+      <div class="cardbody">
+        <h2>
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:#d9362b;color:white;font-size:12px;margin-right:7px;vertical-align:2px">
+            ${index+1}
+          </span>${l.name}
+        </h2>
+        <div class="place">${l.county} • ${l.lake}</div>
+        <div class="badges">
+          <span class="badge">${l.region}</span>
+          <span class="badge ${l.active?'activeLight':'inactive'}">${l.active?'● Active light':'○ Inactive light'}</span>
+          ${done?'<span class="badge activeLight">✓ Visited</span>':''}
+        </div>
+        <dl>
+          <dt>Built</dt><dd>${l.built}</dd>
+          <dt>Operation</dt><dd>${l.operation}</dd>
+          <dt>Access</dt><dd>${l.access}</dd>
+        </dl>
+        <div class="history">${l.history}</div>
+        <div class="actions">
+          <a class="btn directions" href="${directionsURL(l)}" target="_blank">🧭 Get Directions</a>
+          <button class="visit ${done?'done':''}" onclick="toggleVisited(${JSON.stringify(l.name)})">${done?'✓ Visited':'Mark as Visited'}</button>
+          <button class="mapbtn" onclick="showOnMap(${JSON.stringify(l.name)})">Show on Map</button>
+        </div>
+      </div>`;
+    cards.appendChild(card);
+  });
+}
+
+function render(){
+  const list=filtered();
+  updateMapMarkers(list);
+  renderCards(list);
+
+  document.getElementById("count").textContent=`Showing ${list.length} lighthouse${list.length===1?"":"s"}`;
+  document.getElementById("visitedCount").textContent=`Visited: ${visited.size}`;
+
+  if(roadMap){
+    if(list.length) fitMapToList(list);
+    else roadMap.setView([44.8,-85.6],6);
+  }
+}
+
+window.toggleVisited=function(name){
+  if(visited.has(name)) visited.delete(name);
+  else visited.add(name);
+  save();
+  render();
 };
-function zoomMap(region,zone="Overview"){
-  const map=document.getElementById("michiganMap");
-  if(zone==="UP West") map.setAttribute("viewBox","95 15 180 190");
-  else if(zone==="UP Central") map.setAttribute("viewBox","195 70 190 255");
-  else if(zone==="UP East") map.setAttribute("viewBox","330 125 245 165");
-  else if(zone==="LP West") map.setAttribute("viewBox","300 285 125 165");
-  else if(zone==="LP East") map.setAttribute("viewBox","430 215 255 285");
-  else if(region==="Upper Peninsula") map.setAttribute("viewBox","65 20 520 285");
-  else if(region==="Lower Peninsula") map.setAttribute("viewBox","290 210 395 385");
-  else map.setAttribute("viewBox","0 0 700 620");
-}
-function setActiveRegionButton(region){
-  document.querySelectorAll("[data-region]").forEach(btn=>{
+
+window.scrollCard=scrollCard;
+
+window.showOnMap=function(name){
+  if(!roadMap) return;
+  const l=lights.find(x=>x.name===name);
+  if(!l) return;
+  roadMap.setView([l.lat,l.lon],12,{animate:true});
+  window.scrollTo({top:document.querySelector(".mapwrap").offsetTop-10,behavior:"smooth"});
+};
+
+document.querySelectorAll("[data-region]").forEach(btn=>{
   btn.addEventListener("click",()=>{
+    document.querySelectorAll("[data-region]").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
     activeRegion=btn.dataset.region;
-    activeZone="Overview";
-    setActiveRegionButton(activeRegion);
-    renderZoneButtons();
-    zoomMap(activeRegion,activeZone);
-    closeMapPopup();
     render();
   });
 });
+
+document.getElementById("visitedOnly").addEventListener("click",e=>{
+  visitedOnly=!visitedOnly;
+  e.currentTarget.classList.toggle("active",visitedOnly);
+  render();
+});
+
+document.getElementById("search").addEventListener("input",render);
+
+window.addEventListener("load",initRoadMap);
+
 </script>
 </body>
 </html>
