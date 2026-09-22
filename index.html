@@ -172,9 +172,9 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
   </div>
   <div id="leafletMap" aria-label="Interactive Michigan road map with lighthouse locations"></div>
   <div class="mapnote">
-    <strong>Small red dots are lighthouse locations.</strong>
-    This version uses a Michigan-specific boundary outline so the state shape is more accurate. Areas outside the state are muted so Michigan stays front and center.
-    Zoom in for crowded areas, then tap any dot for lighthouse details.
+    <strong>Solid red dots = shore/land lighthouses.</strong>
+    <strong>Red rings = offshore, island, reef, pier, or breakwater lights</strong> that are correctly located out in the water.
+    Zoom in and tap any marker for the lighthouse name and details.
   </div>
 </div>
   </div>
@@ -196,7 +196,7 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
 <script>
 const lights=[
 {name:"Au Sable Light Station",region:"Upper Peninsula",lake:"Lake Superior",county:"Alger County",lat:46.6727,lon:-86.1394,built:"1874",operation:"1874–present",active:true,access:"Public; seasonal tours after a shoreline hike",address:"Au Sable Light Station, Pictured Rocks National Lakeshore, MI",history:"Au Sable marks a dangerous stretch of the Lake Superior shoreline in Pictured Rocks National Lakeshore."},
-{name:"Big Bay Point Lighthouse",region:"Upper Peninsula",lake:"Lake Superior",county:"Marquette County",lat:46.8414,lon:-87.6803,built:"1896",operation:"1896–present",active:true,access:"Limited; lighthouse inn and special access",address:"4674 County Road KCB, Big Bay, MI 49808",history:"Big Bay Point stands high above Lake Superior north of Marquette and remains an active aid to navigation."},
+{name:"Big Bay Point Lighthouse",region:"Upper Peninsula",lake:"Lake Superior",county:"Marquette County",lat:46.8380,lon:-87.6747,built:"1896",operation:"1896–present",active:true,access:"Limited; lighthouse inn and special access",address:"4674 County Road KCB, Big Bay, MI 49808",history:"Big Bay Point stands high above Lake Superior north of Marquette and remains an active aid to navigation."},
 {name:"Copper Harbor Lighthouse",region:"Upper Peninsula",lake:"Lake Superior",county:"Keweenaw County",lat:47.4742,lon:-87.8602,built:"Current masonry lighthouse: 1866",operation:"Historic station; modern aid nearby",active:false,access:"Limited; best viewed by boat",address:"Copper Harbor Lighthouse, Copper Harbor, MI 49918",history:"Copper Harbor Lighthouse served the sheltered harbor at the tip of the Keweenaw Peninsula."},
 {name:"Crisp Point Lighthouse",region:"Upper Peninsula",lake:"Lake Superior",county:"Luce County",lat:46.7529,lon:-85.2573,built:"1904",operation:"1904–1947",active:false,access:"Public; remote seasonal site",address:"1944 County Road 412, Newberry, MI 49868",history:"Crisp Point stands on Michigan's remote Lake Superior Shipwreck Coast."},
 {name:"DeTour Reef Lighthouse",region:"Upper Peninsula",lake:"Lake Huron",county:"Chippewa County",lat:45.9491,lon:-83.9034,built:"1931",operation:"1931–present",active:true,access:"Offshore; scheduled tours may be available",address:"DeTour Reef Lighthouse, De Tour Village, MI 49725",history:"DeTour Reef Light guards the passage between the St. Marys River and northern Lake Huron."},
@@ -257,6 +257,32 @@ try { visited=new Set(JSON.parse(localStorage.getItem("miLighthouseVisited")||"[
 
 let roadMap=null;
 let markerLayer=null;
+
+const OFFSHORE_LIGHTS=new Set([
+  "DeTour Reef Lighthouse",
+  "Granite Island Lighthouse",
+  "Gull Rock Lighthouse",
+  "Huron Island Lighthouse",
+  "Isle Royale Lighthouse",
+  "Keweenaw Waterway Lower Entrance Lighthouse",
+  "Keweenaw Waterway Upper Entrance Lighthouse",
+  "Manistique East Breakwater Lighthouse",
+  "Manitou Island Lighthouse",
+  "Marquette Breakwater Outer Lighthouse",
+  "Martin Reef Lighthouse",
+  "Menominee North Pier Lighthouse",
+  "Ontonagon Harbor West Breakwater Lighthouse",
+  "Passage Island Lighthouse",
+  "Pipe Island Lighthouse",
+  "Presque Isle Harbor Breakwater Lighthouse",
+  "Rock Harbor Lighthouse",
+  "Rock of Ages Lighthouse",
+  "Round Island Lighthouse",
+  "Round Island Passage Lighthouse",
+  "St. Helena Island Lighthouse",
+  "Stannard Rock Lighthouse",
+  "White Shoal Lighthouse"
+]);
 
 function directionsURL(l){
   return "https://www.google.com/maps/dir/?api=1&destination="+encodeURIComponent(l.lat+","+l.lon);
@@ -390,17 +416,19 @@ function updateMapMarkers(list){
 
   list.forEach((l)=>{
     const index=lights.findIndex(x=>x.name===l.name)+1;
+    const offshore=OFFSHORE_LIGHTS.has(l.name);
     const dot=L.circleMarker([l.lat,l.lon],{
-      radius:5,
-      color:"#ffffff",
-      weight:1.5,
-      fillColor:"#d9362b",
-      fillOpacity:0.98,
+      radius:offshore?5.5:4.5,
+      color:offshore?"#d9362b":"#ffffff",
+      weight:offshore?2.2:1.4,
+      fillColor:offshore?"#ffffff":"#d9362b",
+      fillOpacity:offshore?0.95:0.98,
       className:"lighthouse-dot"
     });
 
     const visitedText=visited.has(l.name) ? " • ✓ Visited" : "";
-    dot.bindTooltip(`${index}. ${l.name}`,{
+    const locationType=offshore ? " • Offshore / island / breakwater light" : "";
+    dot.bindTooltip(`${index}. ${l.name}${offshore?" (offshore)":""}`,{
       direction:"top",
       offset:[0,-4],
       opacity:.95
@@ -408,7 +436,7 @@ function updateMapMarkers(list){
 
     dot.bindPopup(`
       <h3>${index}. ${l.name}</h3>
-      <p><strong>${l.county}</strong><br>${l.lake}${visitedText}</p>
+      <p><strong>${l.county}</strong><br>${l.lake}${visitedText}${locationType}</p>
       <p><strong>Access:</strong> ${l.access}</p>
       <a href="${directionsURL(l)}" target="_blank">🧭 Get Directions</a>
       &nbsp;•&nbsp;
