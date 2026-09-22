@@ -166,7 +166,7 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
   <div id="leafletMap" aria-label="Interactive Michigan road map with lighthouse locations"></div>
   <div class="mapnote">
     <strong>Small red dots are lighthouse locations.</strong>
-    The road map is focused tightly on Michigan. Areas outside the state are muted so the state itself stays front and center.
+    This version uses a Michigan-specific boundary outline so the state shape is more accurate. Areas outside the state are muted so Michigan stays front and center.
     Zoom in for crowded areas, then tap any dot for lighthouse details.
   </div>
 </div>
@@ -307,18 +307,20 @@ async function initRoadMap(){
   markerLayer=L.layerGroup().addTo(roadMap);
 
   try{
-    const response=await fetch("https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json");
-    const states=await response.json();
-    const mi=states.features.find(f=>f.properties&&f.properties.name==="Michigan");
+    const response=await fetch("https://raw.githubusercontent.com/johan/world.geo.json/master/countries/USA/MI.geo.json");
+    const miData=await response.json();
+    const mi=miData.features && miData.features[0];
 
     if(mi){
       const stateLayer=L.geoJSON(mi,{
         pane:"statePane",
         style:{
-          color:"#476d73",
-          weight:2.5,
+          color:"#2f5f68",
+          weight:3.5,
           opacity:1,
-          fill:false
+          fill:true,
+          fillColor:"#eef8fc",
+          fillOpacity:0.08
         }
       }).addTo(roadMap);
 
