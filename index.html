@@ -88,9 +88,29 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
 }
 .leaflet-container{
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  cursor:default !important;
 }
-.lighthouse-dot{
-  cursor:pointer;
+.leaflet-container.leaflet-grab,
+.leaflet-container.leaflet-touch-drag{
+  cursor:default !important;
+}
+.lighthouse-pin{
+  background:transparent !important;
+  border:0 !important;
+}
+.lighthouse-pin .dot{
+  display:block;
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  background:#d9362b;
+  border:2px solid #fff;
+  box-shadow:0 1px 4px rgba(0,0,0,.35);
+  cursor:pointer !important;
+}
+.lighthouse-pin .dot.offshore{
+  background:#fff;
+  border:3px solid #d9362b;
 }
 .mapcount{
   font-size:12px;
@@ -172,9 +192,9 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
   </div>
   <div id="leafletMap" aria-label="Interactive Michigan road map with lighthouse locations"></div>
   <div class="mapnote">
-    <strong>Solid red dots = shore/land lighthouses.</strong>
-    <strong>Red rings = offshore, island, reef, pier, or breakwater lights</strong> that are correctly located out in the water.
-    Zoom in and tap any marker for the lighthouse name and details.
+    <strong>Red dots are clickable lighthouse markers.</strong>
+    Move the pointer over a dot and it changes to a hand; click the dot to open the lighthouse name and details.
+    Red rings identify offshore, island, reef, pier, or breakwater lights.
   </div>
 </div>
   </div>
@@ -318,7 +338,7 @@ async function initRoadMap(){
   roadMap=L.map("leafletMap",{
     zoomControl:true,
     scrollWheelZoom:true,
-    preferCanvas:true,
+    preferCanvas:false,
     minZoom:6,
     maxBounds:[[41.3,-91.2],[49.0,-81.0]],
     maxBoundsViscosity:1.0
@@ -417,24 +437,34 @@ function updateMapMarkers(list){
   list.forEach((l)=>{
     const index=lights.findIndex(x=>x.name===l.name)+1;
     const offshore=OFFSHORE_LIGHTS.has(l.name);
-    const dot=L.circleMarker([l.lat,l.lon],{
-      radius:offshore?5.5:4.5,
-      color:offshore?"#d9362b":"#ffffff",
-      weight:offshore?2.2:1.4,
-      fillColor:offshore?"#ffffff":"#d9362b",
-      fillOpacity:offshore?0.95:0.98,
-      className:"lighthouse-dot"
+
+    const icon=L.divIcon({
+      className:"lighthouse-pin",
+      html:`<span class="dot ${offshore?"offshore":""}" title="${l.name}"></span>`,
+      iconSize:[18,18],
+      iconAnchor:[9,9],
+      popupAnchor:[0,-10],
+      tooltipAnchor:[0,-9]
+    });
+
+    const marker=L.marker([l.lat,l.lon],{
+      icon,
+      keyboard:true,
+      riseOnHover:true,
+      title:l.name,
+      alt:l.name
     });
 
     const visitedText=visited.has(l.name) ? " • ✓ Visited" : "";
     const locationType=offshore ? " • Offshore / island / breakwater light" : "";
-    dot.bindTooltip(`${index}. ${l.name}${offshore?" (offshore)":""}`,{
+
+    marker.bindTooltip(`${index}. ${l.name}${offshore?" (offshore)":""}`,{
       direction:"top",
       offset:[0,-4],
       opacity:.95
     });
 
-    dot.bindPopup(`
+    marker.bindPopup(`
       <h3>${index}. ${l.name}</h3>
       <p><strong>${l.county}</strong><br>${l.lake}${visitedText}${locationType}</p>
       <p><strong>Access:</strong> ${l.access}</p>
@@ -443,7 +473,7 @@ function updateMapMarkers(list){
       <a href="#" onclick='scrollCard(${JSON.stringify(l.name)});return false;'>View Details</a>
     `);
 
-    dot.addTo(markerLayer);
+    marker.addTo(markerLayer);
   });
 
   document.getElementById("mapCount").textContent=`${list.length} lighthouse${list.length===1?"":"s"} on map`;
