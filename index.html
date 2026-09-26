@@ -764,8 +764,13 @@ window.setGuideMode=function(mode){
 document.getElementById("showLighthouses").addEventListener("click",()=>setGuideMode("lighthouses"));
 document.getElementById("showBuoys").addEventListener("click",()=>setGuideMode("buoys"));
 
+// Initial visible state. User clicks after this are never overwritten later.
+document.getElementById("lighthouseSection").style.display="block";
+document.getElementById("buoySection").style.display="none";
+
+// The HTML already starts in Lighthouse mode.
+// Do not reset the selected section when all photos/resources finish loading.
 window.addEventListener("load",()=>{
-  setGuideMode("lighthouses");
   initRoadMap();
   renderBuoys();
 });
