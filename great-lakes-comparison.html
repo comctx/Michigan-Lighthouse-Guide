@@ -20,6 +20,11 @@ h1{margin:0;font-size:28px}header p{margin:7px 0 0;opacity:.92}
 .rows{display:grid;gap:12px}
 .row{display:grid;grid-template-columns:130px 1fr 105px;gap:12px;align-items:center;padding:12px;border:1px solid #dbe8ee;border-radius:14px;background:#f9fcfd}
 .row.huron{background:#e7f7fc;border:2px solid #62b6d3}
+.simple-list{display:grid;gap:10px}
+.simple-item{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:13px 14px;border:1px solid #dbe8ee;border-radius:14px;background:#f9fcfd}
+.simple-item.huron{background:#e7f7fc;border:2px solid #62b6d3}
+.simple-lake{font-weight:800;color:#143f57}
+.simple-value{font-weight:850;color:#103852}
 .lake{font-weight:800;color:#143f57}.barwrap{height:28px;background:#eaf1f4;border-radius:999px;overflow:hidden}.bar{height:100%;background:linear-gradient(90deg,#3d91b8,#78c3dc);border-radius:999px;min-width:4px}.value{text-align:right;font-weight:850;color:#103852}
 .note{margin-top:16px;background:#fffaf0;border:1px solid #eadcae;border-radius:14px;padding:12px 14px;font-size:13px;line-height:1.45}
 .source{margin-top:14px;font-size:12px;color:var(--muted)}.source a{color:var(--blue);font-weight:700;text-decoration:none}
@@ -72,15 +77,27 @@ document.getElementById("title").textContent=metric.label;
 document.getElementById("subtitle").textContent="Great Lakes comparison in "+metric.unit+". Lake Huron is highlighted.";
 document.getElementById("note").textContent=metric.note;
 
-const max=Math.max(...metric.values);
 const rows=document.getElementById("rows");
-lakes.forEach((lakeName,i)=>{
-  const row=document.createElement("div");
-  row.className="row"+(lakeName==="Huron"?" huron":"");
-  const value=metric.values[i];
-  row.innerHTML=`<div class="lake">${lakeName}</div><div class="barwrap"><div class="bar" style="width:${(value/max*100).toFixed(1)}%"></div></div><div class="value">${value.toLocaleString()} ${metric.unit}</div>`;
-  rows.appendChild(row);
-});
+
+if(key==="surfaceArea"){
+  const max=Math.max(...metric.values);
+  lakes.forEach((lakeName,i)=>{
+    const row=document.createElement("div");
+    row.className="row"+(lakeName==="Huron"?" huron":"");
+    const value=metric.values[i];
+    row.innerHTML=`<div class="lake">${lakeName}</div><div class="barwrap"><div class="bar" style="width:${(value/max*100).toFixed(1)}%"></div></div><div class="value">${value.toLocaleString()} ${metric.unit}</div>`;
+    rows.appendChild(row);
+  });
+}else{
+  rows.className="simple-list";
+  lakes.forEach((lakeName,i)=>{
+    const item=document.createElement("div");
+    item.className="simple-item"+(lakeName==="Huron"?" huron":"");
+    const value=metric.values[i];
+    item.innerHTML=`<div class="simple-lake">${lakeName}</div><div class="simple-value">${value.toLocaleString()} ${metric.unit}</div>`;
+    rows.appendChild(item);
+  });
+}
 </script>
 </body>
 </html>
