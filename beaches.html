@@ -17,6 +17,21 @@ h1{margin:0;font-size:28px} header p{margin:7px 0 0;opacity:.92}
 .panel{background:white;border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:0 3px 12px rgba(0,0,0,.05)}
 .panel h2{margin-top:0;color:#143f57}
 .panel p{line-height:1.5;color:var(--muted)}
+.park-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;margin-top:14px}
+.park-card{background:white;border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,.05)}
+.park-head{display:flex;gap:12px;align-items:center;padding:14px 15px;background:linear-gradient(145deg,#dff3fb,#eef8fc);border-bottom:1px solid var(--border)}
+.park-icon{font-size:28px;flex:0 0 auto}
+.park-head h3{font-size:19px;margin:0;color:#143f57}
+.place{font-size:13px;color:var(--muted);margin-top:3px}
+.park-body{padding:14px 15px}
+.park-body p{font-size:14px;line-height:1.5;margin:9px 0 12px}
+.badge-row{display:flex;gap:6px;flex-wrap:wrap}
+.badge{padding:5px 8px;border-radius:999px;background:#edf3f6;font-size:11px;font-weight:750;color:#425d6b}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-block;border-radius:10px;padding:9px 11px;font-size:13px;font-weight:750;text-decoration:none}
+.btn.primary{background:var(--blue);color:white}
+.btn.secondary{background:#eaf2f6;color:#244b61}
+.source-note{margin-top:16px;background:#fffaf0;border:1px solid #eadcae;border-radius:14px;padding:12px 14px;font-size:12px;line-height:1.45;color:#5f6f78}
 footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13px}
 </style>
 </head>
@@ -31,9 +46,109 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
     <a class="modebtn" href="boat-launches.html">🚤 Public Boat Launches</a>
   </div>
   <section class="panel">
-    <h2>Public Beaches &amp; Public Parks</h2>
-    <p>This page is ready for Lake Huron public beaches and public parks, with maps, directions, amenities, and photos.</p>
+    <h2>Lake Huron Public Beaches &amp; Public Parks</h2>
+    <p>Verified public shoreline parks along Michigan's Lake Huron coast and Saginaw Bay. Use the buttons on each card for official park information or directions.</p>
   </section>
+
+  <section class="park-grid" aria-label="Lake Huron public beaches and parks">
+    <article class="park-card">
+      <div class="park-head"><span class="park-icon">🏖️</span><div><h3>Bay City State Park</h3><div class="place">Bay City • Saginaw Bay</div></div></div>
+      <div class="park-body">
+        <div class="badge-row"><span class="badge">State Park</span><span class="badge">Beach</span><span class="badge">Accessible</span></div>
+        <p>More than 1,000 feet of sandy beach on Saginaw Bay, plus a coastal boardwalk, accessible beach mat, splash park and Saginaw Bay Visitor Center.</p>
+        <div class="actions">
+          <a class="btn primary" href="https://www.michigan.gov/recsearch/parks/baycity" target="_blank" rel="noopener">Official Park Info</a>
+          <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Bay+City+State+Park+Michigan" target="_blank" rel="noopener">Directions</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="park-card">
+      <div class="park-head"><span class="park-icon">🏖️</span><div><h3>Albert E. Sleeper State Park</h3><div class="place">Caseville • Saginaw Bay</div></div></div>
+      <div class="park-body">
+        <div class="badge-row"><span class="badge">State Park</span><span class="badge">Sandy Beach</span><span class="badge">Picnic Area</span></div>
+        <p>About a half-mile of sandy shoreline with a day-use beach, beach house, picnic area, trails and a modern campground.</p>
+        <div class="actions">
+          <a class="btn primary" href="https://www.michigan.gov/recsearch/parks/sleeper" target="_blank" rel="noopener">Official Park Info</a>
+          <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Albert+E+Sleeper+State+Park+Michigan" target="_blank" rel="noopener">Directions</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="park-card">
+      <div class="park-head"><span class="park-icon">🌅</span><div><h3>Port Crescent State Park</h3><div class="place">Port Austin • Lake Huron</div></div></div>
+      <div class="park-body">
+        <div class="badge-row"><span class="badge">State Park</span><span class="badge">3 Miles Shoreline</span><span class="badge">Dark Sky</span></div>
+        <p>Three miles of sandy Lake Huron shoreline, a buoyed swim area, beach house, picnic area, trails and a designated dark-sky preserve.</p>
+        <div class="actions">
+          <a class="btn primary" href="https://www.michigan.gov/recsearch/parks/portcrescent" target="_blank" rel="noopener">Official Park Info</a>
+          <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Port+Crescent+State+Park+Michigan" target="_blank" rel="noopener">Directions</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="park-card">
+      <div class="park-head"><span class="park-icon">⚓</span><div><h3>Tawas Point State Park</h3><div class="place">East Tawas • Tawas Bay / Lake Huron</div></div></div>
+      <div class="park-body">
+        <div class="badge-row"><span class="badge">State Park</span><span class="badge">Buoyed Beach</span><span class="badge">Lighthouse</span></div>
+        <p>A popular buoyed beach area on a Lake Huron sand spit, with Tawas Point Lighthouse, a picnic area, nature trail and modern campground.</p>
+        <div class="actions">
+          <a class="btn primary" href="https://www.michigan.gov/recsearch/parks/tawaspoint" target="_blank" rel="noopener">Official Park Info</a>
+          <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Tawas+Point+State+Park+Michigan" target="_blank" rel="noopener">Directions</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="park-card">
+      <div class="park-head"><span class="park-icon">🏊</span><div><h3>Harrisville State Park</h3><div class="place">Harrisville • Lake Huron</div></div></div>
+      <div class="park-body">
+        <div class="badge-row"><span class="badge">State Park</span><span class="badge">Swim Beach</span><span class="badge">Paved Trail</span></div>
+        <p>A designated swim beach on the sandy Lake Huron shore, with a day-use area, modern campground and a paved trail connecting into Harrisville.</p>
+        <div class="actions">
+          <a class="btn primary" href="https://www.michigan.gov/recsearch/parks/harrisville" target="_blank" rel="noopener">Official Park Info</a>
+          <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Harrisville+State+Park+Michigan" target="_blank" rel="noopener">Directions</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="park-card">
+      <div class="park-head"><span class="park-icon">🌲</span><div><h3>Negwegon State Park</h3><div class="place">Alcona County • Lake Huron</div></div></div>
+      <div class="park-body">
+        <div class="badge-row"><span class="badge">State Park</span><span class="badge">Rustic</span><span class="badge">Dark Sky</span></div>
+        <p>A large undeveloped shoreline park with miles of Lake Huron coast, about a mile of sandy beach, hiking, backcountry camping and dark-sky viewing.</p>
+        <div class="actions">
+          <a class="btn primary" href="https://www.michigan.gov/recsearch/parks/negwegon" target="_blank" rel="noopener">Official Park Info</a>
+          <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Negwegon+State+Park+Michigan" target="_blank" rel="noopener">Directions</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="park-card">
+      <div class="park-head"><span class="park-icon">🏖️</span><div><h3>P.H. Hoeft State Park</h3><div class="place">Rogers City • Lake Huron</div></div></div>
+      <div class="park-body">
+        <div class="badge-row"><span class="badge">State Park</span><span class="badge">1 Mile Shoreline</span><span class="badge">2 Swim Areas</span></div>
+        <p>About a mile of sandy Lake Huron shoreline with two buoyed swim areas, four miles of trails, a historic pavilion and a modern campground.</p>
+        <div class="actions">
+          <a class="btn primary" href="https://www.michigan.gov/recsearch/parks/hoeft" target="_blank" rel="noopener">Official Park Info</a>
+          <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=PH+Hoeft+State+Park+Michigan" target="_blank" rel="noopener">Directions</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="park-card">
+      <div class="park-head"><span class="park-icon">🥾</span><div><h3>Thompson's Harbor State Park</h3><div class="place">Rogers City Area • Lake Huron</div></div></div>
+      <div class="park-body">
+        <div class="badge-row"><span class="badge">State Park</span><span class="badge">7.5 Miles Shoreline</span><span class="badge">Dark Sky</span></div>
+        <p>A rustic 5,000-acre park along 7.5 miles of Lake Huron shoreline, with trails, dunes, marshes, rocky coast and a designated dark-sky preserve.</p>
+        <div class="actions">
+          <a class="btn primary" href="https://www.michigan.gov/recsearch/parks/thompsonsharbor" target="_blank" rel="noopener">Official Park Info</a>
+          <a class="btn secondary" href="https://www.google.com/maps/search/?api=1&query=Thompsons+Harbor+State+Park+Michigan" target="_blank" rel="noopener">Directions</a>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <div class="source-note">Information is based on current Michigan DNR park listings. State-park vehicle entry may require a Michigan Recreation Passport. Municipal and county beaches can be added next.</div>
 </main>
 <footer>Michigan Lighthouse Guide • Lake Huron Public Beaches & Public Parks</footer>
 </body>
