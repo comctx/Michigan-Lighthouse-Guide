@@ -53,7 +53,7 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
   </div>
 
   <div class="mapframe">
-    <div class="maphead"><strong>Lake Huron Buoy Map</strong><span class="mapcount">4 stations</span></div>
+    <div class="maphead"><strong>Lake Huron Buoy Map</strong><span class="mapcount">7 stations</span></div>
     <div id="buoyMap"></div>
     <div class="mapnote"><strong>Blue markers are buoy stations.</strong> Tap a marker to open the station and its NOAA/NDBC data link.</div>
   </div>
@@ -68,9 +68,12 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
 const buoys=[
 {id:"45003",name:"North Huron",location:"32 NM northeast of Alpena, Michigan",lat:45.351,lon:-82.840,owner:"NOAA National Data Buoy Center",depth:"134.7 m",page:"https://www.ndbc.noaa.gov/station_page.php?station=45003&unit=E"},
 {id:"45008",name:"South Huron",location:"43 NM east of Oscoda, Michigan",lat:44.283,lon:-82.416,owner:"NOAA National Data Buoy Center",depth:"54.3 m",page:"https://www.ndbc.noaa.gov/station_page.php?station=45008&unit=E"},
+{id:"45149",name:"Southern Lake Huron",location:"Southern Lake Huron",lat:43.540,lon:-82.080,owner:"Environment and Climate Change Canada",depth:"58 m",page:"https://www.ndbc.noaa.gov/station_page.php?station=45149&unit=E"},
+{id:"45162",name:"Thunder Bay Buoy, Alpena",location:"Thunder Bay near Alpena, Michigan",lat:44.988,lon:-83.269,owner:"NOAA Great Lakes Environmental Research Laboratory",depth:"20 m",page:"https://www.ndbc.noaa.gov/station_page.php?station=45162&unit=E"},
 {id:"45163",name:"Saginaw Bay Buoy",location:"Saginaw Bay, Michigan",lat:43.983,lon:-83.600,owner:"NOAA Great Lakes Environmental Research Laboratory",depth:"12.5 m",page:"https://www.ndbc.noaa.gov/station_page.php?station=45163&unit=E"},
-{id:"45149",name:"Southern Lake Huron",location:"Southern Lake Huron",lat:43.540,lon:-82.080,owner:"Environment and Climate Change Canada",depth:"58 m",page:"https://www.ndbc.noaa.gov/station_page.php?station=45149&unit=E"}
-];
+{id:"45209",name:"Lakeport Buoy",location:"Lake Huron near Lakeport, Michigan",lat:43.129,lon:-82.391,owner:"Great Lakes Water Authority; maintained by LimnoTech",depth:"14 m",page:"https://www.ndbc.noaa.gov/station_page.php?station=45209&unit=E"},
+{id:"45212",name:"North Huron Spotter",location:"North Lake Huron",lat:45.351,lon:-82.840,owner:"Michigan Technological University",depth:"Not listed",page:"https://www.ndbc.noaa.gov/station_page.php?station=45212&unit=E"}
+]
 
 const host=document.getElementById("cards");
 buoys.forEach(b=>{
