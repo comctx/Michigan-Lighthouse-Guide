@@ -19,7 +19,8 @@ header p{margin:7px 0 0;opacity:.92}
 .controls{background:white;border:1px solid var(--border);border-radius:16px;padding:12px;margin-bottom:14px;box-shadow:0 3px 12px rgba(0,0,0,.05)}
 .mode-switch{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 .modebtn{background:#dcecf3;color:#214f67;font-size:15px;padding:11px 15px}
-.modebtn.active{background:var(--navy);color:white}
+.modebtn.selected{background:var(--navy);color:white;box-shadow:none;outline:none}
+.modebtn:focus-visible{outline:3px solid #66b7dc;outline-offset:2px}
 .buoy-section{display:none}
 .buoy-section.active{display:block}
 .lighthouse-section.hidden{display:none}
@@ -197,8 +198,8 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
 <main class="wrap">
 
 <div class="mode-switch" aria-label="Guide sections">
-  <button id="showLighthouses" class="modebtn active">⚓ Lighthouses</button>
-  <button id="showBuoys" class="modebtn">🌊 Lake Huron Buoys</button>
+  <button type="button" id="showLighthouses" class="modebtn selected" aria-pressed="true" onclick="setGuideMode('lighthouses')">⚓ Lighthouses</button>
+  <button type="button" id="showBuoys" class="modebtn" aria-pressed="false" onclick="setGuideMode('buoys')">🌊 Lake Huron Buoys</button>
 </div>
 
 <div id="lighthouseSection" class="lighthouse-section">
@@ -723,7 +724,7 @@ function renderBuoys(){
 window.showBuoyOnMap=function(id){
   const b=lakeHuronBuoys.find(x=>x.id===id);
   if(!b) return;
-  document.getElementById("showBuoys").click();
+  setGuideMode("buoys");
   setTimeout(()=>{
     if(buoyMap){
       buoyMap.setView([b.lat,b.lon],8,{animate:true});
@@ -732,25 +733,32 @@ window.showBuoyOnMap=function(id){
   },100);
 };
 
-document.getElementById("showLighthouses").addEventListener("click",()=>{
-  document.getElementById("lighthouseSection").classList.remove("hidden");
-  document.getElementById("buoySection").classList.remove("active");
-  document.getElementById("showLighthouses").classList.add("active");
-  document.getElementById("showBuoys").classList.remove("active");
-  if(roadMap) setTimeout(()=>roadMap.invalidateSize(),50);
-});
+window.setGuideMode=function(mode){
+  const lighthouseMode=mode!=="buoys";
+  const lighthouseSection=document.getElementById("lighthouseSection");
+  const buoySection=document.getElementById("buoySection");
+  const lighthouseButton=document.getElementById("showLighthouses");
+  const buoyButton=document.getElementById("showBuoys");
 
-document.getElementById("showBuoys").addEventListener("click",()=>{
-  document.getElementById("lighthouseSection").classList.add("hidden");
-  document.getElementById("buoySection").classList.add("active");
-  document.getElementById("showBuoys").classList.add("active");
-  document.getElementById("showLighthouses").classList.remove("active");
-  initBuoyMap();
-  renderBuoys();
-  setTimeout(()=>buoyMap && buoyMap.invalidateSize(),80);
-});
+  lighthouseSection.classList.toggle("hidden",!lighthouseMode);
+  buoySection.classList.toggle("active",!lighthouseMode);
+
+  lighthouseButton.classList.toggle("selected",lighthouseMode);
+  buoyButton.classList.toggle("selected",!lighthouseMode);
+  lighthouseButton.setAttribute("aria-pressed",lighthouseMode?"true":"false");
+  buoyButton.setAttribute("aria-pressed",lighthouseMode?"false":"true");
+
+  if(lighthouseMode){
+    if(roadMap) setTimeout(()=>roadMap.invalidateSize(),80);
+  }else{
+    initBuoyMap();
+    renderBuoys();
+    setTimeout(()=>buoyMap && buoyMap.invalidateSize(),100);
+  }
+};
 
 window.addEventListener("load",()=>{
+  setGuideMode("lighthouses");
   initRoadMap();
   renderBuoys();
 });
