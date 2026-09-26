@@ -18,7 +18,7 @@ h1{margin:0;font-size:28px} header p{margin:7px 0 0;opacity:.92}
 .huron-facts h2{margin:0 0 5px;color:#143f57;font-size:24px}
 .intro{margin:0 0 14px;color:var(--muted);font-size:14px;line-height:1.45}
 .fact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
-.fact-card{background:linear-gradient(145deg,#eef8fc,#f9fcfd);border:1px solid #cfe0e8;border-radius:14px;padding:13px;text-align:center}
+.fact-card{background:linear-gradient(145deg,#eef8fc,#f9fcfd);border:1px solid #cfe0e8;border-radius:14px;padding:13px;text-align:center;text-decoration:none;color:inherit;display:block;transition:transform .15s ease,box-shadow .15s ease}.fact-card:hover{transform:translateY(-2px);box-shadow:0 5px 14px rgba(16,56,82,.12)}.fact-card:focus-visible{outline:3px solid #66b7dc;outline-offset:2px}
 .fact-icon{font-size:24px}.fact-value{font-size:21px;font-weight:850;color:#103852;margin-top:6px}.fact-label{font-size:12px;color:#5f7480;margin-top:3px}
 .huron-highlights{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin-top:12px}
 .huron-highlight{background:#f7fbfd;border:1px solid #dbe8ee;border-radius:14px;padding:12px 13px;font-size:13px;line-height:1.45}
@@ -62,16 +62,16 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
 
   <section class="huron-facts">
     <h2>Lake Huron Facts &amp; Figures</h2>
-    <p class="intro">A quick look at the size, depth, shoreline, islands, and geography of one of North America's Great Lakes.</p>
+    <p class="intro">A quick look at the size, depth, shoreline, islands, and geography of one of North America's Great Lakes. <strong>Click any fact to compare it with the other Great Lakes.</strong></p>
     <div class="fact-grid">
-      <div class="fact-card"><div class="fact-icon">🗺️</div><div class="fact-value">23,000 sq mi</div><div class="fact-label">Surface area</div></div>
-      <div class="fact-card"><div class="fact-icon">📏</div><div class="fact-value">206 mi</div><div class="fact-label">Approx. length</div></div>
-      <div class="fact-card"><div class="fact-icon">↔️</div><div class="fact-value">183 mi</div><div class="fact-label">Maximum breadth</div></div>
-      <div class="fact-card"><div class="fact-icon">⬇️</div><div class="fact-value">195 ft</div><div class="fact-label">Average depth</div></div>
-      <div class="fact-card"><div class="fact-icon">🔻</div><div class="fact-value">750 ft</div><div class="fact-label">Maximum depth</div></div>
-      <div class="fact-card"><div class="fact-icon">💧</div><div class="fact-value">850 cu mi</div><div class="fact-label">Water volume</div></div>
-      <div class="fact-card"><div class="fact-icon">〰️</div><div class="fact-value">3,827 mi</div><div class="fact-label">Shoreline incl. islands</div></div>
-      <div class="fact-card"><div class="fact-icon">⛰️</div><div class="fact-value">577 ft</div><div class="fact-label">Elevation above sea level</div></div>
+      <a class="fact-card" href="great-lakes-comparison.html?fact=surfaceArea" aria-label="Compare Great Lakes surface area"><div class="fact-icon">🗺️</div><div class="fact-value">23,000 sq mi</div><div class="fact-label">Surface area</div></a>
+      <a class="fact-card" href="great-lakes-comparison.html?fact=length" aria-label="Compare Great Lakes lengths"><div class="fact-icon">📏</div><div class="fact-value">206 mi</div><div class="fact-label">Approx. length</div></a>
+      <a class="fact-card" href="great-lakes-comparison.html?fact=breadth" aria-label="Compare Great Lakes maximum breadth"><div class="fact-icon">↔️</div><div class="fact-value">183 mi</div><div class="fact-label">Maximum breadth</div></a>
+      <a class="fact-card" href="great-lakes-comparison.html?fact=avgDepth" aria-label="Compare Great Lakes average depth"><div class="fact-icon">⬇️</div><div class="fact-value">195 ft</div><div class="fact-label">Average depth</div></a>
+      <a class="fact-card" href="great-lakes-comparison.html?fact=maxDepth" aria-label="Compare Great Lakes maximum depth"><div class="fact-icon">🔻</div><div class="fact-value">750 ft</div><div class="fact-label">Maximum depth</div></a>
+      <a class="fact-card" href="great-lakes-comparison.html?fact=volume" aria-label="Compare Great Lakes water volume"><div class="fact-icon">💧</div><div class="fact-value">850 cu mi</div><div class="fact-label">Water volume</div></a>
+      <a class="fact-card" href="great-lakes-comparison.html?fact=shoreline" aria-label="Compare Great Lakes shoreline length"><div class="fact-icon">〰️</div><div class="fact-value">3,827 mi</div><div class="fact-label">Shoreline incl. islands</div></a>
+      <a class="fact-card" href="great-lakes-comparison.html?fact=elevation" aria-label="Compare Great Lakes elevation"><div class="fact-icon">⛰️</div><div class="fact-value">577 ft</div><div class="fact-label">Elevation above sea level</div></a>
     </div>
 
     <div class="huron-highlights">
