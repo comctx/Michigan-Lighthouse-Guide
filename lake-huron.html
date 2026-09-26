@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Lake Huron Lighthouses • Michigan Lighthouse Guide</title>
+<style>
+:root{--navy:#103852;--blue:#1d6d92;--ink:#18313f;--muted:#687984;--border:#d7e2e8;--green:#237a57}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#f4f8fa;color:var(--ink)}
+header{background:linear-gradient(135deg,var(--navy),var(--blue));color:white;padding:22px 18px 18px}
+.wrap{max-width:1050px;margin:auto;padding:16px} header .wrap{padding:0}
+h1{margin:0;font-size:28px} header p{margin:7px 0 0;opacity:.92}
+.mode-switch{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.modebtn{background:#dcecf3;color:#214f67;font-size:15px;padding:11px 15px;text-decoration:none;display:inline-block;border-radius:10px;font-weight:700}
+.modebtn.selected{background:var(--navy);color:white}
+.huron-facts{margin:0 0 20px;background:white;border:1px solid var(--border);border-radius:18px;padding:16px;box-shadow:0 3px 12px rgba(0,0,0,.05)}
+.huron-facts h2{margin:0 0 5px;color:#143f57;font-size:24px}
+.intro{margin:0 0 14px;color:var(--muted);font-size:14px;line-height:1.45}
+.fact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.fact-card{background:linear-gradient(145deg,#eef8fc,#f9fcfd);border:1px solid #cfe0e8;border-radius:14px;padding:13px;text-align:center}
+.fact-icon{font-size:24px}.fact-value{font-size:21px;font-weight:850;color:#103852;margin-top:6px}.fact-label{font-size:12px;color:#5f7480;margin-top:3px}
+.huron-highlights{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin-top:12px}
+.huron-highlight{background:#f7fbfd;border:1px solid #dbe8ee;border-radius:14px;padding:12px 13px;font-size:13px;line-height:1.45}
+.huron-highlight strong{color:#184b64}
+.huron-sources{margin-top:12px;font-size:12px;color:var(--muted)}
+.huron-sources a{color:var(--blue);font-weight:700;text-decoration:none}
+.section-title{font-size:24px;color:#143f57;margin:22px 0 12px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}
+.card{background:white;border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,.05)}
+.hero{height:210px;background:linear-gradient(145deg,#dff3fb,#f9f0d2);display:flex;align-items:center;justify-content:center;font-size:46px;overflow:hidden}
+.hero img{width:100%;height:100%;object-fit:cover;display:block}
+.credit{padding:6px 10px;background:#f7fafb;border-top:1px solid var(--border);font-size:11px;color:var(--muted)}
+.credit a{color:var(--blue);font-weight:700;text-decoration:none}
+.body{padding:15px}.body h3{font-size:20px;margin:0 0 3px}.place{color:var(--muted);font-size:14px;margin-bottom:10px}
+.badge{display:inline-block;padding:5px 8px;border-radius:999px;background:#edf3f6;font-size:12px;font-weight:700;margin:0 5px 7px 0}
+.badge.active{background:#e4f4eb;color:var(--green)}
+dl{display:grid;grid-template-columns:95px 1fr;gap:6px 8px;margin:10px 0 12px;font-size:14px}dt{font-weight:750;color:#425d6b}dd{margin:0}
+.history{font-size:14px;line-height:1.45}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btn{border-radius:10px;padding:10px 13px;font-weight:700;text-decoration:none;display:inline-block;background:var(--blue);color:white}
+footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13px}
+@media(max-width:600px){header h1{font-size:24px}.wrap{padding:10px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>🌊 Lake Huron Lighthouses</h1>
+    <p>Explore Lake Huron facts, geography, and Michigan lighthouse history.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="mode-switch">
+    <a class="modebtn" href="index.html">⚓ All Lighthouses</a>
+    <a class="modebtn selected" href="lake-huron.html" aria-current="page">🌊 Lake Huron Lighthouses</a>
+    <a class="modebtn" href="buoys.html">📡 Lake Huron Buoys</a>
+  </div>
+
+  <section class="huron-facts">
+    <h2>Lake Huron Facts &amp; Figures</h2>
+    <p class="intro">A quick look at the size, depth, shoreline, islands, and geography of one of North America's Great Lakes.</p>
+    <div class="fact-grid">
+      <div class="fact-card"><div class="fact-icon">🗺️</div><div class="fact-value">23,000 sq mi</div><div class="fact-label">Surface area</div></div>
+      <div class="fact-card"><div class="fact-icon">📏</div><div class="fact-value">206 mi</div><div class="fact-label">Approx. length</div></div>
+      <div class="fact-card"><div class="fact-icon">↔️</div><div class="fact-value">183 mi</div><div class="fact-label">Maximum breadth</div></div>
+      <div class="fact-card"><div class="fact-icon">⬇️</div><div class="fact-value">195 ft</div><div class="fact-label">Average depth</div></div>
+      <div class="fact-card"><div class="fact-icon">🔻</div><div class="fact-value">750 ft</div><div class="fact-label">Maximum depth</div></div>
+      <div class="fact-card"><div class="fact-icon">💧</div><div class="fact-value">850 cu mi</div><div class="fact-label">Water volume</div></div>
+      <div class="fact-card"><div class="fact-icon">〰️</div><div class="fact-value">3,827 mi</div><div class="fact-label">Shoreline incl. islands</div></div>
+      <div class="fact-card"><div class="fact-icon">⛰️</div><div class="fact-value">577 ft</div><div class="fact-label">Elevation above sea level</div></div>
+    </div>
+
+    <div class="huron-highlights">
+      <div class="huron-highlight"><strong>🏝️ More than 30,000 islands:</strong> Lake Huron's islands contribute to its exceptionally long shoreline.</div>
+      <div class="huron-highlight"><strong>🌎 Manitoulin Island:</strong> It is the world's largest island in a freshwater lake.</div>
+      <div class="huron-highlight"><strong>🇺🇸 🇨🇦 International lake:</strong> Lake Huron is shared by Michigan and Ontario.</div>
+      <div class="huron-highlight"><strong>📊 Great Lakes ranking:</strong> Lake Huron is the second-largest Great Lake by surface area and third-largest by water volume.</div>
+      <div class="huron-highlight"><strong>🌊 Major waters:</strong> Georgian Bay and Saginaw Bay are two of Lake Huron's best-known large bays.</div>
+      <div class="huron-highlight"><strong>⏳ Water retention:</strong> Lake Huron's water-retention time is about 22 years.</div>
+    </div>
+
+    <div class="huron-sources">
+      Sources:
+      <a href="https://www.epa.gov/greatlakes/physical-features-great-lakes" target="_blank" rel="noopener">U.S. EPA</a>
+      ·
+      <a href="https://www.epa.gov/greatlakes/lake-huron" target="_blank" rel="noopener">EPA Lake Huron</a>
+      ·
+      <a href="https://www.canada.ca/en/canada-water-agency/freshwater-ecosystem-initiatives/great-lakes/great-lakes-protection/maps/lake-huron-drainage-basin.html" target="_blank" rel="noopener">Canada Water Agency</a>
+    </div>
+  </section>
+
+  <h2 class="section-title">Michigan Lake Huron Lighthouses</h2>
+  <section id="cards" class="cards"></section>
+</main>
+
+<footer>Michigan Lighthouse Guide • Lake Huron</footer>
+
+<script>
+const lights=[
+{name:"DeTour Reef Lighthouse",lake:"Lake Huron",county:"Chippewa County",built:"1931",operation:"1931–present",active:true,access:"Offshore; scheduled tours may be available",address:"DeTour Reef Lighthouse, De Tour Village, MI 49725",history:"DeTour Reef Light guards the passage between the St. Marys River and northern Lake Huron.",photoUrl:"https://commons.wikimedia.org/wiki/Special:FilePath/DeTour%20Reef%20Light%20Station%20-%20Michigan.jpg?width=1200",photoCredit:"U.S. Coast Guard / Wikimedia Commons • Public domain",photoSource:"https://commons.wikimedia.org/wiki/File:DeTour_Reef_Light_Station_-_Michigan.jpg"},
+{name:"Old Mackinac Point Lighthouse",lake:"Lake Huron / Straits",county:"Emmet County",built:"1892",operation:"1892–1957",active:false,access:"Public historic site; seasonal tours",address:"526 N Huron Ave, Mackinaw City, MI 49701",history:"Old Mackinac Point guided ships through the Straits of Mackinac until 1957.",photoUrl:"https://commons.wikimedia.org/wiki/Special:FilePath/OldMackinacPointLighthouse.jpg?width=1200",photoCredit:"Eli Duke / Wikimedia Commons • CC BY-SA 2.0",photoSource:"https://commons.wikimedia.org/wiki/File:OldMackinacPointLighthouse.jpg"},
+{name:"Tawas Point Lighthouse",lake:"Lake Huron",county:"Iosco County",built:"1876",operation:"1876–2016 in the historic tower",active:false,access:"Public museum in Tawas Point State Park",address:"686 Tawas Beach Rd, East Tawas, MI 48730",history:"The present Tawas Point lighthouse replaced an earlier station after the shoreline changed.",photoUrl:"https://commons.wikimedia.org/wiki/Special:FilePath/TawasPointLighthouse01.jpg?width=1200",photoCredit:"Dyarnall / Wikimedia Commons • CC BY-SA 3.0",photoSource:"https://commons.wikimedia.org/wiki/File:TawasPointLighthouse01.jpg"},
+{name:"Fort Gratiot Lighthouse",lake:"Lake Huron",county:"St. Clair County",built:"1829",operation:"1829–present",active:true,access:"Historic light station; seasonal tours",address:"2802 Omar St, Port Huron, MI 48060",history:"Fort Gratiot is Michigan's oldest surviving lighthouse.",photoUrl:"https://commons.wikimedia.org/wiki/Special:FilePath/Fort%20Gratiot%20Lighthouse.jpg?width=1200",photoCredit:"James Marvin Phelps / Wikimedia Commons • CC BY 2.0",photoSource:"https://commons.wikimedia.org/wiki/File:Fort_Gratiot_Lighthouse.jpg"}
+];
+
+const cards=document.getElementById("cards");
+lights.forEach(l=>{
+  const article=document.createElement("article");
+  article.className="card";
+  article.innerHTML=`
+    <div class="hero"><img src="${l.photoUrl}" alt="${l.name}" loading="lazy"></div>
+    <div class="credit">${l.photoCredit} · <a href="${l.photoSource}" target="_blank" rel="noopener">Photo source</a></div>
+    <div class="body">
+      <h3>${l.name}</h3>
+      <div class="place">${l.county} • ${l.lake}</div>
+      <span class="badge ${l.active?"active":""}">${l.active?"Active light":"Historic light"}</span>
+      <dl><dt>Built</dt><dd>${l.built}</dd><dt>Operation</dt><dd>${l.operation}</dd><dt>Access</dt><dd>${l.access}</dd></dl>
+      <div class="history">${l.history}</div>
+      <div class="actions"><a class="btn" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(l.address)}" target="_blank" rel="noopener">Get Directions</a></div>
+    </div>`;
+  cards.appendChild(article);
+});
+</script>
+</body>
+</html>
