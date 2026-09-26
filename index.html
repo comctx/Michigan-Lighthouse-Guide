@@ -196,6 +196,14 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
   cursor: default !important;
 }
 
+#leafletMap .leaflet-container,
+#leafletMap .leaflet-pane,
+#leafletMap .leaflet-layer,
+#leafletMap .leaflet-tile,
+#leafletMap .leaflet-tile-container {
+  cursor: default !important;
+}
+
 /* Only actual clickable lighthouse markers, links and map controls show the hand. */
 #leafletMap .leaflet-marker-icon.lighthouse-pin,
 #leafletMap .leaflet-marker-icon.lighthouse-pin *,
@@ -431,11 +439,19 @@ async function initRoadMap(){
   roadMap=L.map("leafletMap",{
     zoomControl:true,
     scrollWheelZoom:true,
+    dragging:false,
+    touchZoom:true,
+    doubleClickZoom:true,
     preferCanvas:false,
     minZoom:6,
     maxBounds:[[41.3,-91.2],[49.0,-81.0]],
     maxBoundsViscosity:1.0
   });
+
+  // Prevent Leaflet from applying its grab-hand cursor to the whole map.
+  const lighthouseMapEl=document.getElementById("leafletMap");
+  lighthouseMapEl.classList.remove("leaflet-grab");
+  lighthouseMapEl.style.cursor="default";
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
     maxZoom:18,
