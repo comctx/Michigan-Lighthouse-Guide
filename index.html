@@ -99,6 +99,19 @@ dt{font-weight:750;color:#425d6b} dd{margin:0}
 .visit.done{background:var(--green);color:white}
 .mapbtn{background:#eef2f4;color:#455}
 .note{margin-top:16px;background:var(--cream);border:1px solid #eadcae;border-radius:14px;padding:12px 14px;font-size:13px;line-height:1.45}
+.huron-facts{margin:16px 0 20px;background:white;border:1px solid var(--border);border-radius:18px;padding:16px;box-shadow:0 3px 12px rgba(0,0,0,.05)}
+.huron-facts h2{margin:0 0 5px;color:#143f57;font-size:24px}
+.huron-facts .intro{margin:0 0 14px;color:var(--muted);font-size:14px;line-height:1.45}
+.fact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.fact-card{background:linear-gradient(145deg,#eef8fc,#f9fcfd);border:1px solid #cfe0e8;border-radius:14px;padding:13px;text-align:center}
+.fact-icon{font-size:24px;line-height:1}
+.fact-value{font-size:21px;font-weight:850;color:#103852;margin-top:6px}
+.fact-label{font-size:12px;color:#5f7480;margin-top:3px}
+.huron-highlights{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin-top:12px}
+.huron-highlight{background:#f7fbfd;border:1px solid #dbe8ee;border-radius:14px;padding:12px 13px;font-size:13px;line-height:1.45}
+.huron-highlight strong{color:#184b64}
+.huron-sources{margin-top:12px;font-size:12px;color:var(--muted)}
+.huron-sources a{color:var(--blue);font-weight:700;text-decoration:none}
 footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13px}
 @media(max-width:600px){header h1{font-size:24px}.wrap{padding:10px}.controls{position:sticky;top:0;z-index:5}}
 
@@ -208,6 +221,40 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
   <a class="modebtn selected" href="index.html" aria-current="page">⚓ Lighthouses</a>
   <a class="modebtn" href="buoys.html">🌊 Lake Huron Buoys</a>
 </div>
+
+<section class="huron-facts" aria-labelledby="huronFactsTitle">
+  <h2 id="huronFactsTitle">🌊 Lake Huron Facts &amp; Figures</h2>
+  <p class="intro">A quick look at the size, depth, shoreline, islands, and geography of one of North America's Great Lakes.</p>
+
+  <div class="fact-grid">
+    <div class="fact-card"><div class="fact-icon">🗺️</div><div class="fact-value">23,000 sq mi</div><div class="fact-label">Surface area</div></div>
+    <div class="fact-card"><div class="fact-icon">📏</div><div class="fact-value">206 mi</div><div class="fact-label">Approx. length</div></div>
+    <div class="fact-card"><div class="fact-icon">↔️</div><div class="fact-value">183 mi</div><div class="fact-label">Maximum breadth</div></div>
+    <div class="fact-card"><div class="fact-icon">⬇️</div><div class="fact-value">195 ft</div><div class="fact-label">Average depth</div></div>
+    <div class="fact-card"><div class="fact-icon">🔻</div><div class="fact-value">750 ft</div><div class="fact-label">Maximum depth</div></div>
+    <div class="fact-card"><div class="fact-icon">💧</div><div class="fact-value">850 cu mi</div><div class="fact-label">Water volume</div></div>
+    <div class="fact-card"><div class="fact-icon">〰️</div><div class="fact-value">3,827 mi</div><div class="fact-label">Shoreline incl. islands</div></div>
+    <div class="fact-card"><div class="fact-icon">⛰️</div><div class="fact-value">577 ft</div><div class="fact-label">Elevation above sea level</div></div>
+  </div>
+
+  <div class="huron-highlights">
+    <div class="huron-highlight"><strong>🏝️ More than 30,000 islands:</strong> Lake Huron's many islands contribute to its exceptionally long shoreline.</div>
+    <div class="huron-highlight"><strong>🌎 Manitoulin Island:</strong> Located in Lake Huron, it is the world's largest island in a freshwater lake.</div>
+    <div class="huron-highlight"><strong>🇺🇸 🇨🇦 International lake:</strong> Lake Huron is shared by Michigan in the United States and Ontario in Canada.</div>
+    <div class="huron-highlight"><strong>📊 Great Lakes ranking:</strong> Lake Huron is the second-largest Great Lake by surface area and the third-largest by water volume.</div>
+    <div class="huron-highlight"><strong>🌊 Major waters:</strong> Georgian Bay and Saginaw Bay are two of Lake Huron's best-known large bays.</div>
+    <div class="huron-highlight"><strong>⏳ Water retention:</strong> EPA physical-feature data lists Lake Huron's retention time at about 22 years.</div>
+  </div>
+
+  <div class="huron-sources">
+    Sources:
+    <a href="https://www.epa.gov/greatlakes/physical-features-great-lakes" target="_blank" rel="noopener">U.S. EPA Great Lakes physical features</a>
+    ·
+    <a href="https://www.epa.gov/greatlakes/lake-huron" target="_blank" rel="noopener">U.S. EPA Lake Huron</a>
+    ·
+    <a href="https://www.canada.ca/en/canada-water-agency/freshwater-ecosystem-initiatives/great-lakes/great-lakes-protection/maps/lake-huron-drainage-basin.html" target="_blank" rel="noopener">Canada Water Agency</a>
+  </div>
+</section>
 
 <div id="lighthouseSection" class="lighthouse-section">
 <section class="controls">
