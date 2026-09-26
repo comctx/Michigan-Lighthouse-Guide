@@ -120,7 +120,7 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
   background:#d9362b;
   border:2px solid #fff;
   box-shadow:0 1px 4px rgba(0,0,0,.35);
-  cursor:pointer !important;
+  cursor:default !important;
 }
 .lighthouse-pin .dot.offshore{
   background:#fff;
@@ -179,43 +179,18 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
 </style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style id="map-cursor-fix">
-/* Override Leaflet's grab-hand cursor. Keep an arrow on the map itself. */
+/* Use the normal arrow everywhere inside the lighthouse map.
+   Map controls and lighthouse markers remain clickable. */
 #leafletMap,
+#leafletMap *,
 #leafletMap.leaflet-container,
-#leafletMap.leaflet-grab,
-#leafletMap.leaflet-touch-drag,
-#leafletMap.leaflet-dragging,
-#leafletMap .leaflet-map-pane,
-#leafletMap .leaflet-tile-pane,
-#leafletMap .leaflet-tile-container,
-#leafletMap .leaflet-tile,
-#leafletMap .leaflet-overlay-pane,
-#leafletMap .leaflet-shadow-pane,
-#leafletMap .leaflet-tooltip-pane,
-#leafletMap .leaflet-popup-pane {
+#leafletMap .leaflet-interactive,
+#leafletMap .leaflet-marker-icon,
+#leafletMap .leaflet-control,
+#leafletMap .leaflet-control a,
+#leafletMap .leaflet-popup,
+#leafletMap .leaflet-popup a {
   cursor: default !important;
-}
-
-/* Leaflet marks vector shapes as interactive and gives them a hand cursor.
-   The Michigan outline is display-only, so keep the normal arrow on those shapes. */
-#leafletMap .leaflet-interactive {
-  cursor: default !important;
-}
-
-#leafletMap .leaflet-container,
-#leafletMap .leaflet-pane,
-#leafletMap .leaflet-layer,
-#leafletMap .leaflet-tile,
-#leafletMap .leaflet-tile-container {
-  cursor: default !important;
-}
-
-/* Only actual clickable lighthouse markers, links and map controls show the hand. */
-#leafletMap .leaflet-marker-icon.lighthouse-pin,
-#leafletMap .leaflet-marker-icon.lighthouse-pin *,
-#leafletMap .leaflet-popup a,
-#leafletMap .leaflet-control a {
-  cursor: pointer !important;
 }
 </style>
 </head>
