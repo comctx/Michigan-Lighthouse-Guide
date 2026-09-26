@@ -17,6 +17,24 @@ header h1{margin:0;font-size:28px}
 header p{margin:7px 0 0;opacity:.92}
 .wrap{max-width:1050px;margin:auto;padding:16px}
 .controls{background:white;border:1px solid var(--border);border-radius:16px;padding:12px;margin-bottom:14px;box-shadow:0 3px 12px rgba(0,0,0,.05)}
+.mode-switch{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.modebtn{background:#dcecf3;color:#214f67;font-size:15px;padding:11px 15px}
+.modebtn.active{background:var(--navy);color:white}
+.buoy-section{display:none}
+.buoy-section.active{display:block}
+.lighthouse-section.hidden{display:none}
+#buoyMap{width:100%;height:480px;border-radius:16px;background:#bfeef0}
+.buoy-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:14px}
+.buoy-card{background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,.05)}
+.buoy-head{padding:14px 15px;background:linear-gradient(145deg,#dff3fb,#eef8fc);border-bottom:1px solid var(--border)}
+.buoy-head h2{font-size:19px;margin:0;color:#143f57}
+.buoy-id{font-size:13px;color:var(--blue);font-weight:800;margin-top:4px}
+.buoy-body{padding:14px 15px}
+.buoy-body p{font-size:14px;line-height:1.4;margin:6px 0}
+.buoy-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.buoy-live{background:var(--blue);color:white}
+.buoy-mapbtn{background:#eaf2f6;color:#244b61}
+.buoy-note{background:#eef8fc;border:1px solid #c7e2ec;border-radius:14px;padding:12px 14px;font-size:13px;line-height:1.45;margin-bottom:14px}
 .row{display:flex;gap:8px;flex-wrap:wrap}
 button,.btn{border:0;border-radius:10px;padding:10px 13px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block}
 .filter{background:#eaf2f6;color:#244b61}
@@ -177,6 +195,13 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
 </header>
 
 <main class="wrap">
+
+<div class="mode-switch" aria-label="Guide sections">
+  <button id="showLighthouses" class="modebtn active">⚓ Lighthouses</button>
+  <button id="showBuoys" class="modebtn">🌊 Lake Huron Buoys</button>
+</div>
+
+<div id="lighthouseSection" class="lighthouse-section">
 <section class="controls">
   <div class="row">
     <button class="filter active" data-region="All">All Michigan</button>
@@ -212,6 +237,30 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
 <div class="note">
 <strong>Road-map version:</strong> This version displays all 51 lighthouse records currently loaded in the app as small red dots on an interactive road map. The next data expansion can add the remaining Michigan lighthouse sites without changing the map design.
 </div>
+</div>
+
+<section id="buoySection" class="buoy-section">
+  <div class="buoy-note">
+    <strong>Lake Huron buoy stations:</strong> Use the map and station cards below to find official buoy locations.
+    Tap <strong>Live NOAA Data</strong> for the station's latest available wind, wave, water-temperature, and weather observations.
+    Some Great Lakes buoys are seasonal and may show no recent reports when they are out of the water.
+  </div>
+
+  <div class="mapwrap">
+    <div class="mapframe">
+      <div class="maphead">
+        <strong>Lake Huron Buoy Map</strong>
+        <span class="mapcount">4 stations</span>
+      </div>
+      <div id="buoyMap" aria-label="Interactive map of Lake Huron buoy stations"></div>
+      <div class="mapnote">
+        <strong>Blue markers are buoy stations.</strong> Tap a marker for the station name and a link to the latest NOAA/NDBC data.
+      </div>
+    </div>
+  </div>
+
+  <section id="buoyCards" class="buoy-grid"></section>
+</section>
 </main>
 
 <footer>Michigan Lighthouse Guide • Geographic offline map</footer>
@@ -269,6 +318,49 @@ const lights=[
 {name:"Little Sable Point Lighthouse",region:"Lower Peninsula",lake:"Lake Michigan",county:"Oceana County",lat:43.6514,lon:-86.5396,built:"1874",operation:"1874–present",active:true,access:"Public grounds; seasonal tower tours",address:"Little Sable Point Lighthouse, Silver Lake State Park, Mears, MI 49436",history:"Little Sable Point's brick tower rises directly from the Lake Michigan dunes.",photoUrl:"https://commons.wikimedia.org/wiki/Special:FilePath/Little%20Point%20Sable%20Lighthouse.jpg?width=1200",photoCredit:"David Plotzki / Wikimedia Commons • CC BY 2.0",photoSource:"https://commons.wikimedia.org/wiki/File:Little_Point_Sable_Lighthouse.jpg"},
 {name:"Tawas Point Lighthouse",region:"Lower Peninsula",lake:"Lake Huron",county:"Iosco County",lat:44.2538,lon:-83.4496,built:"1876",operation:"1876–2016 in the historic tower",active:false,access:"Public museum in Tawas Point State Park",address:"686 Tawas Beach Rd, East Tawas, MI 48730",history:"The present Tawas Point lighthouse replaced an earlier station after the shoreline changed.",photoUrl:"https://commons.wikimedia.org/wiki/Special:FilePath/TawasPointLighthouse01.jpg?width=1200",photoCredit:"Dyarnall / Wikimedia Commons • CC BY-SA 3.0",photoSource:"https://commons.wikimedia.org/wiki/File:TawasPointLighthouse01.jpg"},
 {name:"Fort Gratiot Lighthouse",region:"Lower Peninsula",lake:"Lake Huron",county:"St. Clair County",lat:43.0063,lon:-82.4224,built:"1829",operation:"1829–present",active:true,access:"Historic light station; seasonal tours",address:"2802 Omar St, Port Huron, MI 48060",history:"Fort Gratiot is Michigan's oldest surviving lighthouse.",photoUrl:"https://commons.wikimedia.org/wiki/Special:FilePath/Fort%20Gratiot%20Lighthouse.jpg?width=1200",photoCredit:"James Marvin Phelps / Wikimedia Commons • CC BY 2.0",photoSource:"https://commons.wikimedia.org/wiki/File:Fort_Gratiot_Lighthouse.jpg"}
+];
+
+const lakeHuronBuoys=[
+  {
+    id:"45003",
+    name:"North Huron",
+    location:"32 NM northeast of Alpena, Michigan",
+    lat:45.351,
+    lon:-82.840,
+    owner:"NOAA National Data Buoy Center",
+    depth:"134.7 m",
+    page:"https://www.ndbc.noaa.gov/station_page.php?station=45003&unit=E"
+  },
+  {
+    id:"45008",
+    name:"South Huron",
+    location:"43 NM east of Oscoda, Michigan",
+    lat:44.283,
+    lon:-82.416,
+    owner:"NOAA National Data Buoy Center",
+    depth:"54.3 m",
+    page:"https://www.ndbc.noaa.gov/station_page.php?station=45008&unit=E"
+  },
+  {
+    id:"45163",
+    name:"Saginaw Bay Buoy",
+    location:"Saginaw Bay, Michigan",
+    lat:43.983,
+    lon:-83.600,
+    owner:"NOAA Great Lakes Environmental Research Laboratory",
+    depth:"12.5 m",
+    page:"https://www.ndbc.noaa.gov/station_page.php?station=45163&unit=E"
+  },
+  {
+    id:"45149",
+    name:"Southern Lake Huron",
+    location:"Southern Lake Huron",
+    lat:43.540,
+    lon:-82.080,
+    owner:"Environment and Climate Change Canada",
+    depth:"58 m",
+    page:"https://www.ndbc.noaa.gov/station_page.php?station=45149&unit=E"
+  }
 ];
 </script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -571,7 +663,97 @@ document.getElementById("visitedOnly").addEventListener("click",e=>{
 
 document.getElementById("search").addEventListener("input",render);
 
-window.addEventListener("load",initRoadMap);
+let buoyMap=null;
+let buoyLayer=null;
+
+function initBuoyMap(){
+  if(buoyMap || typeof L==="undefined") return;
+  buoyMap=L.map("buoyMap",{zoomControl:true,scrollWheelZoom:true});
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+    maxZoom:18,
+    attribution:'&copy; OpenStreetMap contributors'
+  }).addTo(buoyMap);
+
+  buoyLayer=L.layerGroup().addTo(buoyMap);
+  lakeHuronBuoys.forEach(b=>{
+    const icon=L.divIcon({
+      className:"lighthouse-pin",
+      html:'<span class="dot" style="background:#1976a8;border-color:#fff"></span>',
+      iconSize:[18,18],
+      iconAnchor:[9,9],
+      popupAnchor:[0,-10]
+    });
+    const marker=L.marker([b.lat,b.lon],{icon,title:`${b.id} — ${b.name}`});
+    marker.bindPopup(`
+      <h3>${b.id} — ${b.name}</h3>
+      <p><strong>${b.location}</strong></p>
+      <p>Water depth: ${b.depth}</p>
+      <a href="${b.page}" target="_blank" rel="noopener">Live NOAA/NDBC Data</a>
+    `);
+    marker.addTo(buoyLayer);
+  });
+  buoyMap.fitBounds(L.latLngBounds(lakeHuronBuoys.map(b=>[b.lat,b.lon])),{padding:[28,28]});
+}
+
+function renderBuoys(){
+  const host=document.getElementById("buoyCards");
+  host.innerHTML="";
+  lakeHuronBuoys.forEach(b=>{
+    const card=document.createElement("article");
+    card.className="buoy-card";
+    card.innerHTML=`
+      <div class="buoy-head">
+        <h2>🌊 ${b.name}</h2>
+        <div class="buoy-id">Station ${b.id}</div>
+      </div>
+      <div class="buoy-body">
+        <p><strong>Location:</strong> ${b.location}</p>
+        <p><strong>Coordinates:</strong> ${b.lat.toFixed(3)}° N, ${Math.abs(b.lon).toFixed(3)}° W</p>
+        <p><strong>Water depth:</strong> ${b.depth}</p>
+        <p><strong>Maintained by:</strong> ${b.owner}</p>
+        <div class="buoy-actions">
+          <a class="btn buoy-live" href="${b.page}" target="_blank" rel="noopener">📡 Live NOAA Data</a>
+          <button class="buoy-mapbtn" onclick="showBuoyOnMap('${b.id}')">Show on Map</button>
+        </div>
+      </div>`;
+    host.appendChild(card);
+  });
+}
+
+window.showBuoyOnMap=function(id){
+  const b=lakeHuronBuoys.find(x=>x.id===id);
+  if(!b) return;
+  document.getElementById("showBuoys").click();
+  setTimeout(()=>{
+    if(buoyMap){
+      buoyMap.setView([b.lat,b.lon],8,{animate:true});
+      document.querySelector("#buoySection .mapwrap").scrollIntoView({behavior:"smooth",block:"start"});
+    }
+  },100);
+};
+
+document.getElementById("showLighthouses").addEventListener("click",()=>{
+  document.getElementById("lighthouseSection").classList.remove("hidden");
+  document.getElementById("buoySection").classList.remove("active");
+  document.getElementById("showLighthouses").classList.add("active");
+  document.getElementById("showBuoys").classList.remove("active");
+  if(roadMap) setTimeout(()=>roadMap.invalidateSize(),50);
+});
+
+document.getElementById("showBuoys").addEventListener("click",()=>{
+  document.getElementById("lighthouseSection").classList.add("hidden");
+  document.getElementById("buoySection").classList.add("active");
+  document.getElementById("showBuoys").classList.add("active");
+  document.getElementById("showLighthouses").classList.remove("active");
+  initBuoyMap();
+  renderBuoys();
+  setTimeout(()=>buoyMap && buoyMap.invalidateSize(),80);
+});
+
+window.addEventListener("load",()=>{
+  initRoadMap();
+  renderBuoys();
+});
 
 </script>
 </body>
