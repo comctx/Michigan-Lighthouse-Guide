@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Lake Huron Buoys • Michigan Lighthouse Guide</title>
+<title>Lake Huron Buoys & Weather Stations • Michigan Lighthouse Guide</title>
 <style>
 :root{--navy:#103852;--blue:#1d6d92;--ink:#18313f;--muted:#687984;--border:#d7e2e8;--card:#fff}
 *{box-sizing:border-box}
@@ -35,7 +35,7 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
 <body>
 <header>
   <div class="wrap">
-    <h1>🌊 U.S. Lake Huron Buoys</h1>
+    <h1>🌊 U.S. Lake Huron Buoys & Weather Stations & Weather Stations</h1>
     <p>U.S. buoy locations on Lake Huron and Michigan’s Lake Huron bays, with NOAA/NDBC data links.</p>
   </div>
 </header>
@@ -44,23 +44,23 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
   <div class="mode-switch">
     <a class="modebtn" href="index.html">⚓ All Lighthouses</a>
     <a class="modebtn" href="lake-huron.html">🌊 Lake Huron Lighthouses</a>
-    <a class="modebtn selected" href="buoys.html" aria-current="page">📡 Lake Huron Buoys</a>
+    <a class="modebtn selected" href="buoys.html" aria-current="page">📡 Buoys & Weather Stations</a>
   </div>
 
   <div class="note">
-    <strong>U.S. Lake Huron buoy stations:</strong> This page lists NOAA/NDBC buoy stations in U.S. Lake Huron waters, including Thunder Bay and Saginaw Bay. Canadian stations, shore stations, and Mackinac Straits buoys are not included. Great Lakes buoys may be seasonal, so some stations may not report during winter or maintenance periods.
+    <strong>U.S. Lake Huron buoys &amp; weather stations:</strong> This page includes floating buoy stations plus useful fixed NOAA/NDBC weather stations in U.S. Lake Huron waters, including Thunder Bay and Saginaw Bay. Canadian stations are not included. Great Lakes buoys may be seasonal, so some stations may not report during winter or maintenance periods.
   </div>
 
   <div class="mapframe">
-    <div class="maphead"><strong>U.S. Lake Huron Buoy Map</strong><span class="mapcount">6 stations</span></div>
+    <div class="maphead"><strong>U.S. Lake Huron Buoys & Weather Stations Map</strong><span class="mapcount">7 stations</span></div>
     <div id="buoyMap">Loading interactive buoy map…</div>
-    <div class="mapnote"><strong>Blue markers are buoy stations.</strong> Tap a marker to open the station and its NOAA/NDBC data link.</div>
+    <div class="mapnote"><strong>Blue markers show buoys and fixed weather stations.</strong> Tap a marker to open the station and its NOAA/NDBC data link.</div>
   </div>
 
   <section id="cards" class="grid"></section>
 </main>
 
-<footer>Michigan Lighthouse Guide • U.S. Lake Huron Buoys</footer>
+<footer>Michigan Lighthouse Guide • U.S. Lake Huron Buoys & Weather Stations & Weather Stations</footer>
 
 <script>
 const buoys=[
@@ -69,7 +69,8 @@ const buoys=[
 {id:"45162",name:"Thunder Bay Buoy, Alpena",area:"Thunder Bay",location:"Thunder Bay near Alpena, Michigan",lat:44.988,lon:-83.269,owner:"NOAA Great Lakes Environmental Research Laboratory",depth:"20 m",page:"https://www.ndbc.noaa.gov/station_page.php?station=45162&unit=E"},
 {id:"45163",name:"Saginaw Bay Buoy",area:"Saginaw Bay",location:"Saginaw Bay, Michigan",lat:43.983,lon:-83.600,owner:"NOAA Great Lakes Environmental Research Laboratory",depth:"12.5 m",page:"https://www.ndbc.noaa.gov/station_page.php?station=45163&unit=E"},
 {id:"45209",name:"Lakeport Buoy",area:"Main Lake Huron",location:"Lake Huron near Lakeport, Michigan",lat:43.129,lon:-82.391,owner:"Great Lakes Water Authority; maintained by LimnoTech",depth:"14 m",page:"https://www.ndbc.noaa.gov/station_page.php?station=45209&unit=E"},
-{id:"45212",name:"North Huron Spotter",area:"Main Lake Huron",location:"North Lake Huron",lat:45.351,lon:-82.840,owner:"Michigan Technological University",depth:"Not listed by NDBC",page:"https://www.ndbc.noaa.gov/station_page.php?station=45212&unit=E"}
+{id:"45212",name:"North Huron Spotter",area:"Main Lake Huron",location:"North Lake Huron",lat:45.351,lon:-82.840,owner:"Michigan Technological University",depth:"Not listed by NDBC",page:"https://www.ndbc.noaa.gov/station_page.php?station=45212&unit=E"},
+{id:"SBLM4",name:"Saginaw Bay Light #1",type:"Fixed weather station",area:"Saginaw Bay",location:"Saginaw Bay Light #1, Michigan",lat:43.810,lon:-83.720,owner:"NWS WFO Detroit/Pontiac, MI (DTX)",depth:"Fixed light structure",page:"https://www.ndbc.noaa.gov/station_page.php?station=SBLM4&unit=E"}
 ]
 
 const host=document.getElementById("cards");
@@ -78,6 +79,7 @@ buoys.forEach(b=>{
   card.className="card";
   card.innerHTML=`<div class="head"><h2>🌊 ${b.name}</h2><div class="id">Station ${b.id}</div></div>
   <div class="body">
+  <p><strong>Type:</strong> ${b.type||"Buoy station"}</p>
   <p><strong>Area:</strong> ${b.area}</p>
   <p><strong>Location:</strong> ${b.location}</p>
   <p><strong>Coordinates:</strong> ${b.lat.toFixed(3)}° N, ${Math.abs(b.lon).toFixed(3)}° W</p>
@@ -111,7 +113,7 @@ function loadBuoyMap(){
 
     buoys.forEach(b=>{
       const m=L.circleMarker([b.lat,b.lon],{radius:8,weight:2,fillOpacity:.95});
-      m.bindPopup(`<strong>${b.id} — ${b.name}</strong><br>${b.area}<br>${b.location}<br><a href="${b.page}" target="_blank" rel="noopener">Live NOAA/NDBC Data</a>`);
+      m.bindPopup(`<strong>${b.id} — ${b.name}</strong><br>${b.type||"Buoy station"}<br>${b.area}<br>${b.location}<br><a href="${b.page}" target="_blank" rel="noopener">Live NOAA/NDBC Data</a>`);
       m.addTo(map);
     });
 
