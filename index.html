@@ -18,7 +18,7 @@ header p{margin:7px 0 0;opacity:.92}
 .wrap{max-width:1050px;margin:auto;padding:16px}
 .controls{background:white;border:1px solid var(--border);border-radius:16px;padding:12px;margin-bottom:14px;box-shadow:0 3px 12px rgba(0,0,0,.05)}
 .mode-switch{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.modebtn{background:#dcecf3;color:#214f67;font-size:15px;padding:11px 15px}
+.modebtn{background:#dcecf3;color:#214f67;font-size:15px;padding:11px 15px;text-decoration:none;display:inline-block;border-radius:10px;font-weight:700}
 .modebtn.selected{background:var(--navy);color:white;box-shadow:none;outline:none}
 .modebtn:focus-visible{outline:3px solid #66b7dc;outline-offset:2px}
 .buoy-section{display:none}
@@ -198,8 +198,8 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
 <main class="wrap">
 
 <div class="mode-switch" aria-label="Guide sections">
-  <button type="button" id="showLighthouses" class="modebtn selected" aria-pressed="true">⚓ Lighthouses</button>
-  <button type="button" id="showBuoys" class="modebtn" aria-pressed="false">🌊 Lake Huron Buoys</button>
+  <a class="modebtn selected" href="index.html" aria-current="page">⚓ Lighthouses</a>
+  <a class="modebtn" href="buoys.html">🌊 Lake Huron Buoys</a>
 </div>
 
 <div id="lighthouseSection" class="lighthouse-section">
@@ -240,28 +240,7 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
 </div>
 </div>
 
-<section id="buoySection" class="buoy-section">
-  <div class="buoy-note">
-    <strong>Lake Huron buoy stations:</strong> Use the map and station cards below to find official buoy locations.
-    Tap <strong>Live NOAA Data</strong> for the station's latest available wind, wave, water-temperature, and weather observations.
-    Some Great Lakes buoys are seasonal and may show no recent reports when they are out of the water.
-  </div>
 
-  <div class="mapwrap">
-    <div class="mapframe">
-      <div class="maphead">
-        <strong>Lake Huron Buoy Map</strong>
-        <span class="mapcount">4 stations</span>
-      </div>
-      <div id="buoyMap" aria-label="Interactive map of Lake Huron buoy stations"></div>
-      <div class="mapnote">
-        <strong>Blue markers are buoy stations.</strong> Tap a marker for the station name and a link to the latest NOAA/NDBC data.
-      </div>
-    </div>
-  </div>
-
-  <section id="buoyCards" class="buoy-grid"></section>
-</section>
 </main>
 
 <footer>Michigan Lighthouse Guide • Geographic offline map</footer>
@@ -664,116 +643,7 @@ document.getElementById("visitedOnly").addEventListener("click",e=>{
 
 document.getElementById("search").addEventListener("input",render);
 
-let buoyMap=null;
-let buoyLayer=null;
-
-function initBuoyMap(){
-  if(buoyMap || typeof L==="undefined") return;
-  buoyMap=L.map("buoyMap",{zoomControl:true,scrollWheelZoom:true});
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
-    maxZoom:18,
-    attribution:'&copy; OpenStreetMap contributors'
-  }).addTo(buoyMap);
-
-  buoyLayer=L.layerGroup().addTo(buoyMap);
-  lakeHuronBuoys.forEach(b=>{
-    const icon=L.divIcon({
-      className:"lighthouse-pin",
-      html:'<span class="dot" style="background:#1976a8;border-color:#fff"></span>',
-      iconSize:[18,18],
-      iconAnchor:[9,9],
-      popupAnchor:[0,-10]
-    });
-    const marker=L.marker([b.lat,b.lon],{icon,title:`${b.id} — ${b.name}`});
-    marker.bindPopup(`
-      <h3>${b.id} — ${b.name}</h3>
-      <p><strong>${b.location}</strong></p>
-      <p>Water depth: ${b.depth}</p>
-      <a href="${b.page}" target="_blank" rel="noopener">Live NOAA/NDBC Data</a>
-    `);
-    marker.addTo(buoyLayer);
-  });
-  buoyMap.fitBounds(L.latLngBounds(lakeHuronBuoys.map(b=>[b.lat,b.lon])),{padding:[28,28]});
-}
-
-function renderBuoys(){
-  const host=document.getElementById("buoyCards");
-  host.innerHTML="";
-  lakeHuronBuoys.forEach(b=>{
-    const card=document.createElement("article");
-    card.className="buoy-card";
-    card.innerHTML=`
-      <div class="buoy-head">
-        <h2>🌊 ${b.name}</h2>
-        <div class="buoy-id">Station ${b.id}</div>
-      </div>
-      <div class="buoy-body">
-        <p><strong>Location:</strong> ${b.location}</p>
-        <p><strong>Coordinates:</strong> ${b.lat.toFixed(3)}° N, ${Math.abs(b.lon).toFixed(3)}° W</p>
-        <p><strong>Water depth:</strong> ${b.depth}</p>
-        <p><strong>Maintained by:</strong> ${b.owner}</p>
-        <div class="buoy-actions">
-          <a class="btn buoy-live" href="${b.page}" target="_blank" rel="noopener">📡 Live NOAA Data</a>
-          <button class="buoy-mapbtn" onclick="showBuoyOnMap('${b.id}')">Show on Map</button>
-        </div>
-      </div>`;
-    host.appendChild(card);
-  });
-}
-
-window.showBuoyOnMap=function(id){
-  const b=lakeHuronBuoys.find(x=>x.id===id);
-  if(!b) return;
-  setGuideMode("buoys");
-  setTimeout(()=>{
-    if(buoyMap){
-      buoyMap.setView([b.lat,b.lon],8,{animate:true});
-      document.querySelector("#buoySection .mapwrap").scrollIntoView({behavior:"smooth",block:"start"});
-    }
-  },100);
-};
-
-window.setGuideMode=function(mode){
-  const lighthouseMode=mode!=="buoys";
-  const lighthouseSection=document.getElementById("lighthouseSection");
-  const buoySection=document.getElementById("buoySection");
-  const lighthouseButton=document.getElementById("showLighthouses");
-  const buoyButton=document.getElementById("showBuoys");
-
-  lighthouseSection.style.display=lighthouseMode?"block":"none";
-  buoySection.style.display=lighthouseMode?"none":"block";
-
-  lighthouseButton.classList.toggle("selected",lighthouseMode);
-  buoyButton.classList.toggle("selected",!lighthouseMode);
-  lighthouseButton.setAttribute("aria-pressed",lighthouseMode?"true":"false");
-  buoyButton.setAttribute("aria-pressed",lighthouseMode?"false":"true");
-
-  if(lighthouseMode){
-    if(roadMap) setTimeout(()=>roadMap.invalidateSize(),80);
-  }else{
-    try{
-      initBuoyMap();
-      renderBuoys();
-      setTimeout(()=>buoyMap && buoyMap.invalidateSize(),100);
-    }catch(e){
-      console.error("Buoy section error:",e);
-    }
-  }
-};
-
-document.getElementById("showLighthouses").addEventListener("click",()=>setGuideMode("lighthouses"));
-document.getElementById("showBuoys").addEventListener("click",()=>setGuideMode("buoys"));
-
-// Initial visible state. User clicks after this are never overwritten later.
-document.getElementById("lighthouseSection").style.display="block";
-document.getElementById("buoySection").style.display="none";
-
-// The HTML already starts in Lighthouse mode.
-// Do not reset the selected section when all photos/resources finish loading.
-window.addEventListener("load",()=>{
-  initRoadMap();
-  renderBuoys();
-});
+window.addEventListener("load",initRoadMap);
 
 </script>
 </body>
