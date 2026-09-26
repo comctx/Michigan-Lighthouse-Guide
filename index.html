@@ -112,9 +112,22 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
   cursor:default !important;
 }
-.leaflet-container.leaflet-grab,
-.leaflet-container.leaflet-touch-drag{
+/* Keep the normal arrow over the map itself. */
+#leafletMap,
+#leafletMap .leaflet-pane,
+#leafletMap .leaflet-tile-container,
+#leafletMap .leaflet-overlay-pane,
+#leafletMap .leaflet-map-pane,
+#leafletMap .leaflet-grab,
+#leafletMap .leaflet-dragging{
   cursor:default !important;
+}
+/* Show the hand only on things the user can actually click. */
+#leafletMap .lighthouse-pin,
+#leafletMap .lighthouse-pin *,
+#leafletMap .leaflet-popup a,
+#leafletMap .leaflet-control a{
+  cursor:pointer !important;
 }
 .lighthouse-pin{
   background:transparent !important;
