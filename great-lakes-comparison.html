@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Great Lakes Comparison • Michigan Lighthouse Guide</title>
+<style>
+:root{--navy:#103852;--blue:#1d6d92;--ink:#18313f;--muted:#687984;--border:#d7e2e8}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#f4f8fa;color:var(--ink)}
+header{background:linear-gradient(135deg,var(--navy),var(--blue));color:white;padding:22px 18px 18px}
+.wrap{max-width:950px;margin:auto;padding:16px}header .wrap{padding:0}
+h1{margin:0;font-size:28px}header p{margin:7px 0 0;opacity:.92}
+.back{display:inline-block;background:#dcecf3;color:#214f67;padding:11px 15px;border-radius:10px;text-decoration:none;font-weight:700;margin-bottom:14px}
+.selector{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 16px}
+.selector a{background:#eaf2f6;color:#244b61;text-decoration:none;border-radius:9px;padding:8px 10px;font-size:12px;font-weight:750}
+.selector a.active{background:var(--navy);color:white}
+.panel{background:white;border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:0 3px 12px rgba(0,0,0,.05)}
+.panel h2{margin:0 0 4px;color:#143f57;font-size:26px}.subtitle{color:var(--muted);font-size:14px;margin:0 0 20px}
+.rows{display:grid;gap:12px}
+.row{display:grid;grid-template-columns:130px 1fr 105px;gap:12px;align-items:center;padding:12px;border:1px solid #dbe8ee;border-radius:14px;background:#f9fcfd}
+.row.huron{background:#e7f7fc;border:2px solid #62b6d3}
+.lake{font-weight:800;color:#143f57}.barwrap{height:28px;background:#eaf1f4;border-radius:999px;overflow:hidden}.bar{height:100%;background:linear-gradient(90deg,#3d91b8,#78c3dc);border-radius:999px;min-width:4px}.value{text-align:right;font-weight:850;color:#103852}
+.note{margin-top:16px;background:#fffaf0;border:1px solid #eadcae;border-radius:14px;padding:12px 14px;font-size:13px;line-height:1.45}
+.source{margin-top:14px;font-size:12px;color:var(--muted)}.source a{color:var(--blue);font-weight:700;text-decoration:none}
+footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13px}
+@media(max-width:600px){.row{grid-template-columns:92px 1fr 74px;gap:7px;padding:10px}.value{font-size:13px}.wrap{padding:10px}header h1{font-size:24px}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><h1>📊 Great Lakes Comparison</h1><p>Compare Lake Huron with Superior, Michigan, Erie, and Ontario.</p></div></header>
+<main class="wrap">
+<a class="back" href="lake-huron.html">← Back to Lake Huron Facts</a>
+<div class="selector" id="selector"></div>
+<section class="panel">
+  <h2 id="title">Great Lakes Comparison</h2>
+  <p class="subtitle" id="subtitle"></p>
+  <div class="rows" id="rows"></div>
+  <div class="note" id="note"></div>
+  <div class="source">Sources: <a href="https://www.epa.gov/greatlakes/physical-features-great-lakes" target="_blank" rel="noopener">U.S. EPA — Physical Features of the Great Lakes</a> · <a href="https://nepis.epa.gov/Exe/ZyPURL.cgi?Dockey=P1004ICU.TXT" target="_blank" rel="noopener">Great Lakes Factsheet No. 1</a></div>
+</section>
+</main>
+<footer>Michigan Lighthouse Guide • Great Lakes Comparison</footer>
+<script>
+const lakes=["Superior","Michigan","Huron","Erie","Ontario"];
+const metrics={
+  surfaceArea:{label:"Surface Area",unit:"sq mi",values:[31700,22300,23000,9910,7340],note:"Lake Huron is second among the Great Lakes by surface area."},
+  length:{label:"Approximate Length",unit:"mi",values:[350,307,206,241,193],note:"Lake Huron is shorter than Superior, Michigan, and Erie, but longer than Ontario."},
+  breadth:{label:"Maximum Breadth",unit:"mi",values:[160,118,183,57,53],note:"Lake Huron has the greatest maximum breadth in this EPA comparison."},
+  avgDepth:{label:"Average Depth",unit:"ft",values:[483,279,195,62,283],note:"Lake Huron is deeper on average than Erie, but shallower than Superior, Michigan, and Ontario."},
+  maxDepth:{label:"Maximum Depth",unit:"ft",values:[1332,925,750,210,802],note:"Lake Huron reaches 750 feet at its deepest point."},
+  volume:{label:"Water Volume",unit:"cu mi",values:[2900,1180,850,116,393],note:"Lake Huron ranks third among the Great Lakes by water volume."},
+  shoreline:{label:"Shoreline Length Including Islands",unit:"mi",values:[2726,1638,3827,871,712],note:"Lake Huron has the longest shoreline of the five Great Lakes when islands are included."},
+  elevation:{label:"Elevation Above Sea Level",unit:"ft",values:[600,577,577,569,243],note:"Lakes Michigan and Huron share the same surface elevation because they are connected through the Straits of Mackinac."}
+};
+
+const order=["surfaceArea","length","breadth","avgDepth","maxDepth","volume","shoreline","elevation"];
+const requested=new URLSearchParams(location.search).get("fact");
+const key=metrics[requested]?requested:"surfaceArea";
+const metric=metrics[key];
+
+const selector=document.getElementById("selector");
+order.forEach(k=>{
+  const a=document.createElement("a");
+  a.href="great-lakes-comparison.html?fact="+k;
+  a.textContent=metrics[k].label;
+  if(k===key) a.className="active";
+  selector.appendChild(a);
+});
+
+document.getElementById("title").textContent=metric.label;
+document.getElementById("subtitle").textContent="Great Lakes comparison in "+metric.unit+". Lake Huron is highlighted.";
+document.getElementById("note").textContent=metric.note;
+
+const max=Math.max(...metric.values);
+const rows=document.getElementById("rows");
+lakes.forEach((lakeName,i)=>{
+  const row=document.createElement("div");
+  row.className="row"+(lakeName==="Huron"?" huron":"");
+  const value=metric.values[i];
+  row.innerHTML=`<div class="lake">${lakeName}</div><div class="barwrap"><div class="bar" style="width:${(value/max*100).toFixed(1)}%"></div></div><div class="value">${value.toLocaleString()} ${metric.unit}</div>`;
+  rows.appendChild(row);
+});
+</script>
+</body>
+</html>
