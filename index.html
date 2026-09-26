@@ -110,25 +110,22 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
 }
 .leaflet-container{
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
-  cursor:default !important;
 }
-/* Keep the normal arrow over the map itself. */
+
+/* Force the normal arrow everywhere on the lighthouse map. */
 #leafletMap,
-#leafletMap .leaflet-pane,
-#leafletMap .leaflet-tile-container,
-#leafletMap .leaflet-overlay-pane,
-#leafletMap .leaflet-map-pane,
-#leafletMap .leaflet-grab,
-#leafletMap .leaflet-dragging{
+#leafletMap *{
   cursor:default !important;
 }
-/* Show the hand only on things the user can actually click. */
+
+/* Only truly clickable items get the hand cursor. */
 #leafletMap .lighthouse-pin,
 #leafletMap .lighthouse-pin *,
 #leafletMap .leaflet-popup a,
 #leafletMap .leaflet-control a{
   cursor:pointer !important;
 }
+
 .lighthouse-pin{
   background:transparent !important;
   border:0 !important;
@@ -430,6 +427,15 @@ async function initRoadMap(){
     minZoom:6,
     maxBounds:[[41.3,-91.2],[49.0,-81.0]],
     maxBoundsViscosity:1.0
+  });
+
+  // Leaflet normally uses a grab-hand cursor for draggable maps.
+  // Override it so this guide keeps the standard arrow except on clickable items.
+  const mapEl=document.getElementById("leafletMap");
+  mapEl.style.setProperty("cursor","default","important");
+  mapEl.addEventListener("mousemove",e=>{
+    const clickable=e.target.closest && e.target.closest(".lighthouse-pin, .leaflet-popup a, .leaflet-control a");
+    mapEl.style.setProperty("cursor",clickable?"pointer":"default","important");
   });
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
