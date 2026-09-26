@@ -108,24 +108,6 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
   background:#bfeef0;
   border-radius:16px;
 }
-.leaflet-container{
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
-}
-
-/* Force the normal arrow everywhere on the lighthouse map. */
-#leafletMap,
-#leafletMap *{
-  cursor:default !important;
-}
-
-/* Only truly clickable items get the hand cursor. */
-#leafletMap .lighthouse-pin,
-#leafletMap .lighthouse-pin *,
-#leafletMap .leaflet-popup a,
-#leafletMap .leaflet-control a{
-  cursor:pointer !important;
-}
-
 .lighthouse-pin{
   background:transparent !important;
   border:0 !important;
@@ -196,6 +178,32 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
 
 </style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style id="map-cursor-fix">
+/* Override Leaflet's grab-hand cursor. Keep an arrow on the map itself. */
+#leafletMap,
+#leafletMap.leaflet-container,
+#leafletMap.leaflet-grab,
+#leafletMap.leaflet-touch-drag,
+#leafletMap.leaflet-dragging,
+#leafletMap .leaflet-map-pane,
+#leafletMap .leaflet-tile-pane,
+#leafletMap .leaflet-tile-container,
+#leafletMap .leaflet-tile,
+#leafletMap .leaflet-overlay-pane,
+#leafletMap .leaflet-shadow-pane,
+#leafletMap .leaflet-tooltip-pane,
+#leafletMap .leaflet-popup-pane {
+  cursor: default !important;
+}
+
+/* Only actual clickable lighthouse markers, links and map controls show the hand. */
+#leafletMap .leaflet-marker-icon.lighthouse-pin,
+#leafletMap .leaflet-marker-icon.lighthouse-pin *,
+#leafletMap .leaflet-popup a,
+#leafletMap .leaflet-control a {
+  cursor: pointer !important;
+}
+</style>
 </head>
 <body>
 <header>
@@ -427,15 +435,6 @@ async function initRoadMap(){
     minZoom:6,
     maxBounds:[[41.3,-91.2],[49.0,-81.0]],
     maxBoundsViscosity:1.0
-  });
-
-  // Leaflet normally uses a grab-hand cursor for draggable maps.
-  // Override it so this guide keeps the standard arrow except on clickable items.
-  const mapEl=document.getElementById("leafletMap");
-  mapEl.style.setProperty("cursor","default","important");
-  mapEl.addEventListener("mousemove",e=>{
-    const clickable=e.target.closest && e.target.closest(".lighthouse-pin, .leaflet-popup a, .leaflet-control a");
-    mapEl.style.setProperty("cursor",clickable?"pointer":"default","important");
   });
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
