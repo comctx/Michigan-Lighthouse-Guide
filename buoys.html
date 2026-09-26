@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Lake Huron Buoys • Michigan Lighthouse Guide</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 :root{--navy:#103852;--blue:#1d6d92;--ink:#18313f;--muted:#687984;--border:#d7e2e8;--card:#fff}
 *{box-sizing:border-box}
@@ -20,7 +19,8 @@ h1{margin:0;font-size:28px} header p{margin:7px 0 0;opacity:.92}
 .mapframe{border:1px solid #6bc6cf;border-radius:18px;padding:10px;background:#dff6f7;box-shadow:0 4px 14px rgba(26,102,113,.12)}
 .maphead{display:flex;justify-content:space-between;gap:10px;align-items:center;background:#eef8fc;padding:11px 14px;border-bottom:1px solid #b8d7e4}
 .maphead strong{color:#214f67}.mapcount{font-size:12px;color:var(--muted);background:white;border:1px solid var(--border);border-radius:999px;padding:5px 9px}
-#buoyMap{width:100%;height:520px;border-radius:14px}
+#buoyMap{width:100%;height:520px;border-radius:14px;background:#dff6f7;display:flex;align-items:center;justify-content:center;color:#355f67;font-weight:700}
+.card{content-visibility:auto;contain-intrinsic-size:360px}
 .mapnote{font-size:13px;color:#355f67;background:#d7f3f4;border-top:1px solid #89cfd5;padding:10px 14px;line-height:1.4}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:16px}
 .card{background:white;border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,.05)}
@@ -54,7 +54,7 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
 
   <div class="mapframe">
     <div class="maphead"><strong>Lake Huron Buoy Map</strong><span class="mapcount">7 stations</span></div>
-    <div id="buoyMap"></div>
+    <div id="buoyMap">Loading interactive buoy map…</div>
     <div class="mapnote"><strong>Blue markers are buoy stations.</strong> Tap a marker to open the station and its NOAA/NDBC data link.</div>
   </div>
 
@@ -63,7 +63,6 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
 
 <footer>Michigan Lighthouse Guide • Lake Huron Buoys</footer>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const buoys=[
 {id:"45003",name:"North Huron",location:"32 NM northeast of Alpena, Michigan",lat:45.351,lon:-82.840,owner:"NOAA National Data Buoy Center",depth:"134.7 m",page:"https://www.ndbc.noaa.gov/station_page.php?station=45003&unit=E"},
@@ -90,15 +89,45 @@ buoys.forEach(b=>{
   host.appendChild(card);
 });
 
-if(typeof L!=="undefined"){
-  const map=L.map("buoyMap").setView([44.5,-82.8],6);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:18,attribution:"&copy; OpenStreetMap contributors"}).addTo(map);
-  buoys.forEach(b=>{
-    const m=L.circleMarker([b.lat,b.lon],{radius:8,weight:2,fillOpacity:.95});
-    m.bindPopup(`<strong>${b.id} — ${b.name}</strong><br>${b.location}<br><a href="${b.page}" target="_blank" rel="noopener">Live NOAA/NDBC Data</a>`);
-    m.addTo(map);
-  });
-  map.fitBounds(L.latLngBounds(buoys.map(b=>[b.lat,b.lon])),{padding:[30,30]});
+function loadBuoyMap(){
+  const css=document.createElement("link");
+  css.rel="stylesheet";
+  css.href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css";
+  document.head.appendChild(css);
+
+  const script=document.createElement("script");
+  script.src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js";
+  script.onload=()=>{
+    const mapHost=document.getElementById("buoyMap");
+    mapHost.textContent="";
+    mapHost.style.display="block";
+
+    const map=L.map("buoyMap",{preferCanvas:true}).setView([44.5,-82.8],6);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{
+      maxZoom:18,
+      updateWhenIdle:true,
+      keepBuffer:1,
+      attribution:"&copy; OpenStreetMap contributors"
+    }).addTo(map);
+
+    buoys.forEach(b=>{
+      const m=L.circleMarker([b.lat,b.lon],{radius:8,weight:2,fillOpacity:.95});
+      m.bindPopup(`<strong>${b.id} — ${b.name}</strong><br>${b.location}<br><a href="${b.page}" target="_blank" rel="noopener">Live NOAA/NDBC Data</a>`);
+      m.addTo(map);
+    });
+
+    map.fitBounds(L.latLngBounds(buoys.map(b=>[b.lat,b.lon])),{padding:[30,30]});
+  };
+  script.onerror=()=>{
+    document.getElementById("buoyMap").textContent="The map could not load. The buoy station cards below are still available.";
+  };
+  document.body.appendChild(script);
+}
+
+if("requestIdleCallback" in window){
+  requestIdleCallback(loadBuoyMap,{timeout:1200});
+}else{
+  setTimeout(loadBuoyMap,300);
 }
 </script>
 </body>
