@@ -196,6 +196,12 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
   cursor: default !important;
 }
 
+/* Leaflet marks vector shapes as interactive and gives them a hand cursor.
+   The Michigan outline is display-only, so keep the normal arrow on those shapes. */
+#leafletMap .leaflet-interactive {
+  cursor: default !important;
+}
+
 #leafletMap .leaflet-container,
 #leafletMap .leaflet-pane,
 #leafletMap .leaflet-layer,
@@ -476,6 +482,7 @@ async function initRoadMap(){
     if(mi){
       const stateLayer=L.geoJSON(mi,{
         pane:"statePane",
+        interactive:false,
         style:{
           color:"#2f5f68",
           weight:3.5,
