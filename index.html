@@ -198,8 +198,8 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
 <main class="wrap">
 
 <div class="mode-switch" aria-label="Guide sections">
-  <button type="button" id="showLighthouses" class="modebtn selected" aria-pressed="true" onclick="setGuideMode('lighthouses')">⚓ Lighthouses</button>
-  <button type="button" id="showBuoys" class="modebtn" aria-pressed="false" onclick="setGuideMode('buoys')">🌊 Lake Huron Buoys</button>
+  <button type="button" id="showLighthouses" class="modebtn selected" aria-pressed="true">⚓ Lighthouses</button>
+  <button type="button" id="showBuoys" class="modebtn" aria-pressed="false">🌊 Lake Huron Buoys</button>
 </div>
 
 <div id="lighthouseSection" class="lighthouse-section">
@@ -740,8 +740,8 @@ window.setGuideMode=function(mode){
   const lighthouseButton=document.getElementById("showLighthouses");
   const buoyButton=document.getElementById("showBuoys");
 
-  lighthouseSection.classList.toggle("hidden",!lighthouseMode);
-  buoySection.classList.toggle("active",!lighthouseMode);
+  lighthouseSection.style.display=lighthouseMode?"block":"none";
+  buoySection.style.display=lighthouseMode?"none":"block";
 
   lighthouseButton.classList.toggle("selected",lighthouseMode);
   buoyButton.classList.toggle("selected",!lighthouseMode);
@@ -751,11 +751,18 @@ window.setGuideMode=function(mode){
   if(lighthouseMode){
     if(roadMap) setTimeout(()=>roadMap.invalidateSize(),80);
   }else{
-    initBuoyMap();
-    renderBuoys();
-    setTimeout(()=>buoyMap && buoyMap.invalidateSize(),100);
+    try{
+      initBuoyMap();
+      renderBuoys();
+      setTimeout(()=>buoyMap && buoyMap.invalidateSize(),100);
+    }catch(e){
+      console.error("Buoy section error:",e);
+    }
   }
 };
+
+document.getElementById("showLighthouses").addEventListener("click",()=>setGuideMode("lighthouses"));
+document.getElementById("showBuoys").addEventListener("click",()=>setGuideMode("buoys"));
 
 window.addEventListener("load",()=>{
   setGuideMode("lighthouses");
