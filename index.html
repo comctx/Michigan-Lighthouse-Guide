@@ -176,6 +176,35 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
   .mapwrap{max-width:100%}
 }
 
+
+#easterEggTrigger{user-select:none;-webkit-user-select:none}
+.easter-egg{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  background:rgba(6,30,44,.78);
+  padding:18px;
+  align-items:center;
+  justify-content:center;
+}
+.easter-egg.show{display:flex}
+.easter-card{
+  width:min(620px,100%);
+  max-height:92vh;
+  overflow:auto;
+  background:#fff;
+  border-radius:20px;
+  box-shadow:0 18px 60px rgba(0,0,0,.35);
+  overflow:hidden;
+}
+.easter-card img{width:100%;max-height:390px;object-fit:cover;display:block}
+.easter-body{padding:18px;text-align:center}
+.easter-body h2{margin:0 0 8px;color:var(--navy);font-size:25px}
+.easter-body p{margin:7px 0;line-height:1.45}
+.easter-credit{font-size:11px;color:var(--muted);margin-top:12px}
+.easter-credit a{color:var(--blue);font-weight:700;text-decoration:none}
+.easter-close{margin-top:12px;background:var(--navy);color:white}
 </style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style id="map-cursor-fix">
@@ -197,7 +226,7 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
 <body>
 <header>
   <div class="wrap" style="padding:0">
-    <h1>⚓ Michigan Lighthouse Guide</h1>
+    <h1 id="easterEggTrigger" title="Michigan Lighthouse Guide">⚓ Michigan Lighthouse Guide</h1>
     <p>Explore Michigan lighthouse history, access, directions, and your visited list.</p>
   </div>
 </header>
@@ -249,6 +278,22 @@ footer{text-align:center;color:var(--muted);padding:22px 10px 30px;font-size:13p
 </div>
 </div>
 
+
+<div id="bayCityEasterEgg" class="easter-egg" role="dialog" aria-modal="true" aria-labelledby="bayCityEggTitle">
+  <div class="easter-card">
+    <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Bay%20City%2C%20Michigan%20%282022%29.jpg?width=1280"
+         alt="Bay City, Michigan skyline from the Saginaw River"
+         loading="lazy" referrerpolicy="no-referrer">
+    <div class="easter-body">
+      <h2 id="bayCityEggTitle">🌊 A Little Bay City Surprise</h2>
+      <p>From the Saginaw River to the Great Lakes — a little hometown nod to Bay City, Michigan.</p>
+      <div class="easter-credit">
+        Photo: <a href="https://commons.wikimedia.org/wiki/File:Bay_City,_Michigan_(2022).jpg" target="_blank" rel="noopener">WeaponizingArchitecture / Wikimedia Commons • CC BY-SA 4.0</a>
+      </div>
+      <button id="easterEggClose" class="easter-close" type="button">Close</button>
+    </div>
+  </div>
+</div>
 
 </main>
 
@@ -660,6 +705,46 @@ document.getElementById("visitedOnly").addEventListener("click",e=>{
 });
 
 document.getElementById("search").addEventListener("input",render);
+
+
+let easterTapCount=0;
+let easterTapTimer=null;
+const easterTrigger=document.getElementById("easterEggTrigger");
+const easterEgg=document.getElementById("bayCityEasterEgg");
+const easterClose=document.getElementById("easterEggClose");
+
+function openBayCityEasterEgg(){
+  if(!easterEgg) return;
+  easterEgg.classList.add("show");
+  document.body.style.overflow="hidden";
+  if(easterClose) easterClose.focus();
+}
+function closeBayCityEasterEgg(){
+  if(!easterEgg) return;
+  easterEgg.classList.remove("show");
+  document.body.style.overflow="";
+}
+if(easterTrigger){
+  easterTrigger.addEventListener("click",()=>{
+    easterTapCount++;
+    clearTimeout(easterTapTimer);
+    easterTapTimer=setTimeout(()=>{easterTapCount=0;},2600);
+    if(easterTapCount>=5){
+      easterTapCount=0;
+      clearTimeout(easterTapTimer);
+      openBayCityEasterEgg();
+    }
+  });
+}
+if(easterClose) easterClose.addEventListener("click",closeBayCityEasterEgg);
+if(easterEgg){
+  easterEgg.addEventListener("click",e=>{
+    if(e.target===easterEgg) closeBayCityEasterEgg();
+  });
+}
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape" && easterEgg && easterEgg.classList.contains("show")) closeBayCityEasterEgg();
+});
 
 window.addEventListener("load",initRoadMap);
 
